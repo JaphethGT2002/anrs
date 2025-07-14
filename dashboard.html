@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Dashboard | Balanced Diet Recommendation System</title>
+    <meta
+      name="description"
+      content="User dashboard for the Balanced Diet Recommendation System"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      /* Dashboard specific styles */
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 250px 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      @media (max-width: 768px) {
+        .dashboard-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .sidebar {
+        background-color: var(--light-bg);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        height: fit-content;
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .user-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .user-name {
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .user-email {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .nav-tabs {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .nav-tabs li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .tab-button {
+        display: flex;
+        align-items: center;
+        padding: var(--spacing-sm) var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        width: 100%;
+        text-align: left;
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tab-button i {
+        margin-right: var(--spacing-sm);
+        width: 20px;
+        text-align: center;
+      }
+
+      .tab-button:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .tab-button.active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .logout-button {
+        margin-top: var(--spacing-lg);
+        width: 100%;
+      }
+
+      .dashboard-content {
+        min-height: 600px;
+      }
+
+      .welcome-card {
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        margin-bottom: var(--spacing-lg);
+        display: flex;
+        flex-direction: column;
+      }
+
+      .welcome-card h2 {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .welcome-card p {
+        opacity: 0.9;
+      }
+
+      .welcome-actions {
+        margin-top: var(--spacing-md);
+        align-self: flex-start;
+      }
+
+      .overview-layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      @media (max-width: 992px) {
+        .overview-layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .card-header h3 {
+        margin: 0;
+      }
+
+      .card-header i {
+        margin-right: var(--spacing-sm);
+        color: var(--primary-color);
+      }
+
+      .card-footer {
+        padding-top: var(--spacing-sm);
+        border-top: 1px solid var(--border-color);
+        margin-top: var(--spacing-md);
+        text-align: right;
+      }
+
+      .btn-text {
+        background: none;
+        color: var(--primary-color);
+        padding: 0;
+        text-decoration: underline;
+      }
+
+      .btn-text:hover {
+        background: none;
+        color: var(--primary-dark);
+      }
+
+      .nutrition-insights-card,
+      .quick-actions-card {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .insights-placeholder,
+      .recommendation-placeholder,
+      .activity-placeholder {
+        color: var(--text-secondary);
+        text-align: center;
+        padding: var(--spacing-md);
+      }
+
+      .insight-item {
+        display: flex;
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-md);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .insight-item:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .insight-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-right: var(--spacing-md);
+        width: 40px;
+        text-align: center;
+      }
+
+      .insight-text {
+        flex: 1;
+      }
+
+      .insight-text h4 {
+        margin-top: 0;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .progress-bar {
+        height: 8px;
+        background-color: var(--light-bg);
+        border-radius: 4px;
+        overflow: hidden;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .progress {
+        height: 100%;
+        background-color: var(--primary-color);
+        transition: width 0.3s ease;
+      }
+
+      .category-distribution {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+        margin-top: var(--spacing-xs);
+      }
+
+      .action-card {
+        display: flex;
+        align-items: center;
+        background-color: var(--light-bg);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+        transition: all 0.2s ease;
+        text-decoration: none;
+        color: var(--text-primary);
+      }
+
+      .action-card:hover {
+        background-color: var(--primary-color);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .action-card:last-child {
+        margin-bottom: 0;
+      }
+
+      .action-icon {
+        font-size: 2rem;
+        margin-right: var(--spacing-md);
+        width: 40px;
+        text-align: center;
+      }
+
+      .action-text {
+        flex: 1;
+      }
+
+      .action-text h4 {
+        margin-top: 0;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .action-text p {
+        margin: 0;
+        font-size: 0.9rem;
+      }
+
+      .recent-activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .recent-activity-list li {
+        padding: var(--spacing-sm) 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .recent-activity-list li:last-child {
+        border-bottom: none;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .summary-cards-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .summary-cards-header h3 {
+        margin: 0;
+        color: var(--primary-color);
+      }
+
+      .summary-cards-header button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+      }
+
+      .summary-cards-header button i {
+        transition: transform 0.3s ease;
+      }
+
+      .summary-cards-header button:hover i {
+        transform: rotate(180deg);
+      }
+
+      .summary-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .summary-card {
+        background-color: white;
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-sm);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .summary-card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .summary-card-icon {
+        font-size: 2rem;
+        margin-bottom: var(--spacing-sm);
+        color: var(--primary-color);
+      }
+
+      .summary-card-value {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .summary-card-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .tab-content {
+        display: none;
+        background-color: white;
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-lg);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .tab-content h2 {
+        margin-bottom: var(--spacing-md);
+        color: var(--primary-color);
+      }
+
+      .tab-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .tab-header h2 {
+        margin-bottom: 0;
+      }
+
+      .tab-actions {
+        display: flex;
+        gap: var(--spacing-sm);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+      }
+
+      @media (max-width: 576px) {
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .message {
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+      }
+
+      .saved-item {
+        background-color: var(--light-bg);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .saved-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .saved-date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .saved-item-content {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .saved-item-actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .btn-sm {
+        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: 0.9rem;
+      }
+
+      .btn-danger {
+        background-color: #f44336;
+      }
+
+      .empty-state {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: var(--spacing-lg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: var(--spacing-md);
+      }
+
+      .saved-meals-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: var(--spacing-md);
+        padding-bottom: var(--spacing-sm);
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .saved-meals-header h3 {
+        margin: 0;
+        color: var(--primary-color);
+      }
+
+      .saved-meals-header button {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+      }
+
+      .saved-meals-header button i {
+        transition: transform 0.3s ease;
+      }
+
+      .saved-meals-header button:hover i {
+        transform: rotate(180deg);
+      }
+
+      .saved-meals-list-container {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      /* Analytics styles */
+      .analytics-section {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .activity-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+      }
+
+      .activity-stat {
+        background-color: var(--light-bg);
+        border-radius: var(--border-radius-md);
+        padding: var(--spacing-md);
+        text-align: center;
+      }
+
+      .activity-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .activity-label {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: var(--spacing-md) 0 0 0;
+      }
+
+      .activity-item {
+        display: flex;
+        padding: var(--spacing-sm) 0;
+        border-bottom: 1px solid var(--border-color);
+      }
+
+      .activity-time {
+        min-width: 150px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .activity-description {
+        flex: 1;
+      }
+
+      /* Category badges */
+      .food-categories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-xs);
+        margin-top: var(--spacing-sm);
+      }
+
+      .category-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        color: white;
+      }
+
+      .category-badge i {
+        margin-right: 0.25rem;
+      }
+
+      /* Success message */
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+        display: flex;
+        align-items: center;
+      }
+
+      .success-message i {
+        margin-right: var(--spacing-sm);
+      }
+
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .footer-section h4 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <div class="dashboard-layout">
+          <!-- Sidebar -->
+          <div class="sidebar">
+            <div class="user-info">
+              <div class="user-avatar">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="user-name" id="sidebar-user-name">User Name</div>
+              <div class="user-email" id="sidebar-user-email">
+                user@example.com
+              </div>
+            </div>
+
+            <ul class="nav-tabs">
+              <li>
+                <button class="tab-button" data-tab="overview-tab">
+                  <i class="fas fa-home"></i> Overview
+                </button>
+              </li>
+              <li>
+                <button class="tab-button" data-tab="profile-tab">
+                  <i class="fas fa-user-edit"></i> Profile
+                </button>
+              </li>
+              <li>
+                <button class="tab-button" data-tab="saved-meals-tab">
+                  <i class="fas fa-utensils"></i> Saved Meals
+                </button>
+              </li>
+              <li>
+                <button class="tab-button" data-tab="budget-history-tab">
+                  <i class="fas fa-money-bill-wave"></i> Budget History
+                </button>
+              </li>
+              <li>
+                <button class="tab-button" data-tab="grocery-history-tab">
+                  <i class="fas fa-shopping-basket"></i> Grocery History
+                </button>
+              </li>
+              <li>
+                <button
+                  class="tab-button"
+                  data-tab="children-recommendations-tab"
+                >
+                  <i class="fas fa-child"></i> Children Recommendations
+                </button>
+              </li>
+              <li>
+                <button class="tab-button" data-tab="analytics-tab">
+                  <i class="fas fa-chart-bar"></i> Analytics
+                </button>
+              </li>
+            </ul>
+
+            <button id="logout-btn" class="btn btn-secondary logout-button">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+
+          <!-- Dashboard Content -->
+          <div class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content">
+              <div class="welcome-card">
+                <h2>Welcome, <span id="welcome-name">User</span>!</h2>
+                <p>Last login: <span id="last-login">Never</span></p>
+                <div class="welcome-actions">
+                  <a href="#" id="view-profile-btn" class="btn btn-sm">
+                    <i class="fas fa-user-edit"></i> Edit Profile
+                  </a>
+                </div>
+              </div>
+
+              <div class="overview-layout">
+                <div class="overview-main">
+                  <div class="summary-cards-header">
+                    <h3>Your Activity Summary</h3>
+                    <button
+                      id="refresh-summary-btn"
+                      class="btn btn-sm"
+                      title="Refresh summary data"
+                    >
+                      <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                  </div>
+                  <div class="summary-cards">
+                    <div class="summary-card">
+                      <div class="summary-card-icon">
+                        <i class="fas fa-utensils"></i>
+                      </div>
+                      <div class="summary-card-value" id="saved-meals-count">
+                        0
+                      </div>
+                      <div class="summary-card-label">Saved Meals</div>
+                    </div>
+
+                    <div class="summary-card">
+                      <div class="summary-card-icon">
+                        <i class="fas fa-money-bill-wave"></i>
+                      </div>
+                      <div class="summary-card-value" id="budget-history-count">
+                        0
+                      </div>
+                      <div class="summary-card-label">Budget Plans</div>
+                    </div>
+
+                    <div class="summary-card">
+                      <div class="summary-card-icon">
+                        <i class="fas fa-shopping-basket"></i>
+                      </div>
+                      <div
+                        class="summary-card-value"
+                        id="grocery-history-count"
+                      >
+                        0
+                      </div>
+                      <div class="summary-card-label">Grocery Analyses</div>
+                    </div>
+
+                    <div class="summary-card">
+                      <div class="summary-card-icon">
+                        <i class="fas fa-child"></i>
+                      </div>
+                      <div
+                        class="summary-card-value"
+                        id="children-recommendations-count"
+                      >
+                        0
+                      </div>
+                      <div class="summary-card-label">Children Guides</div>
+                    </div>
+
+                    <div class="summary-card">
+                      <div class="summary-card-icon">
+                        <i class="fas fa-calendar-check"></i>
+                      </div>
+                      <div class="summary-card-value" id="days-active">0</div>
+                      <div class="summary-card-label">Days Active</div>
+                    </div>
+                  </div>
+
+                  <div class="card nutrition-insights-card">
+                    <div class="card-header">
+                      <h3>
+                        <i class="fas fa-lightbulb"></i> Nutrition Insights
+                      </h3>
+                    </div>
+                    <div class="card-content" id="nutrition-insights">
+                      <div class="insights-placeholder">
+                        <p>
+                          Your nutrition insights will appear here as you use
+                          the system. Start by analyzing your groceries or
+                          creating a budget meal plan!
+                        </p>
+                      </div>
+                      <div
+                        class="insights-content hidden"
+                        id="insights-content"
+                      >
+                        <div class="insight-item">
+                          <div class="insight-icon">
+                            <i class="fas fa-balance-scale"></i>
+                          </div>
+                          <div class="insight-text">
+                            <h4>Balance Score</h4>
+                            <div class="progress-bar">
+                              <div
+                                class="progress"
+                                id="balance-progress"
+                                style="width: 0%"
+                              ></div>
+                            </div>
+                            <p id="balance-text">
+                              Start analyzing your diet to see your balance
+                              score.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div class="insight-item">
+                          <div class="insight-icon">
+                            <i class="fas fa-chart-pie"></i>
+                          </div>
+                          <div class="insight-text">
+                            <h4>Food Category Distribution</h4>
+                            <div
+                              class="category-distribution"
+                              id="category-distribution"
+                            >
+                              <!-- Category distribution will be loaded here -->
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="insight-item">
+                          <div class="insight-icon">
+                            <i class="fas fa-coins"></i>
+                          </div>
+                          <div class="insight-text">
+                            <h4>Budget Efficiency</h4>
+                            <p id="budget-efficiency-text">
+                              Create budget meal plans to see your efficiency
+                              score.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="card quick-actions-card">
+                    <div class="card-header">
+                      <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    </div>
+                    <div class="card-content">
+                      <div class="quick-actions">
+                        <a href="index.html" class="action-card">
+                          <div class="action-icon">
+                            <i class="fas fa-tachometer-alt"></i>
+                          </div>
+                          <div class="action-text">
+                            <h4>Analyze Groceries</h4>
+                            <p>Check if your food selection is balanced</p>
+                          </div>
+                        </a>
+
+                        <a href="budget.html" class="action-card">
+                          <div class="action-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                          </div>
+                          <div class="action-text">
+                            <h4>Budget Meal Plan</h4>
+                            <p>Create nutritious meals within your budget</p>
+                          </div>
+                        </a>
+
+                        <a href="children.html" class="action-card">
+                          <div class="action-icon">
+                            <i class="fas fa-child"></i>
+                          </div>
+                          <div class="action-text">
+                            <h4>Children's Nutrition</h4>
+                            <p>Get age-appropriate feeding recommendations</p>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="overview-sidebar">
+                  <div class="card recent-activity-card">
+                    <div class="card-header">
+                      <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                    </div>
+                    <div class="card-content">
+                      <ul
+                        class="recent-activity-list"
+                        id="recent-activity-list"
+                      >
+                        <li class="activity-placeholder">
+                          No recent activity yet.
+                        </li>
+                      </ul>
+                    </div>
+                    <div class="card-footer">
+                      <a
+                        href="#"
+                        id="view-all-activity-btn"
+                        class="btn btn-sm btn-text"
+                      >
+                        <i class="fas fa-chart-line"></i> View All Analytics
+                      </a>
+                    </div>
+                  </div>
+
+                  <div class="card latest-recommendation-card">
+                    <div class="card-header">
+                      <h3><i class="fas fa-star"></i> Latest Recommendation</h3>
+                    </div>
+                    <div class="card-content" id="latest-recommendation">
+                      <div class="recommendation-placeholder">
+                        <p>Your latest recommendation will appear here.</p>
+                        <p>
+                          Start by creating a meal plan or getting children's
+                          nutrition advice!
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content">
+              <h2>Profile Settings</h2>
+
+              <div class="card">
+                <h3>Personal Information</h3>
+                <div id="profile-message" class="message"></div>
+
+                <form id="profile-form">
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="profile-name">Name</label>
+                      <input type="text" id="profile-name" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="profile-email">Email</label>
+                      <input type="email" id="profile-email" required />
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn">
+                    <i class="fas fa-save"></i> Save Changes
+                  </button>
+                </form>
+              </div>
+
+              <div class="card" style="margin-top: var(--spacing-lg)">
+                <h3>Change Password</h3>
+                <div id="password-message" class="message"></div>
+
+                <form id="password-form">
+                  <div class="form-group">
+                    <label for="current-password">Current Password</label>
+                    <input type="password" id="current-password" required />
+                  </div>
+
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label for="new-password">New Password</label>
+                      <input type="password" id="new-password" required />
+                    </div>
+
+                    <div class="form-group">
+                      <label for="confirm-password">Confirm New Password</label>
+                      <input type="password" id="confirm-password" required />
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn">
+                    <i class="fas fa-key"></i> Change Password
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Saved Meals Tab -->
+            <div id="saved-meals-tab" class="tab-content">
+              <div class="tab-header">
+                <h2>Saved Meals</h2>
+                <div class="tab-actions">
+                  <button id="create-sample-meals-btn" class="btn btn-sm">
+                    <i class="fas fa-plus-circle"></i> Create Sample Data
+                  </button>
+                </div>
+              </div>
+              <div id="saved-meals-list">
+                <!-- Saved meals will be loaded here -->
+                <p class="empty-state">No saved meals yet.</p>
+              </div>
+            </div>
+
+            <!-- Budget History Tab -->
+            <div id="budget-history-tab" class="tab-content">
+              <h2>Budget History</h2>
+              <div id="budget-history-list">
+                <!-- Budget history will be loaded here -->
+                <p class="empty-state">No budget history yet.</p>
+              </div>
+            </div>
+
+            <!-- Grocery History Tab -->
+            <div id="grocery-history-tab" class="tab-content">
+              <h2>Grocery History</h2>
+              <div id="grocery-history-list">
+                <!-- Grocery history will be loaded here -->
+                <p class="empty-state">No grocery history yet.</p>
+              </div>
+            </div>
+
+            <!-- Children Recommendations Tab -->
+            <div id="children-recommendations-tab" class="tab-content">
+              <h2>Children Recommendations</h2>
+              <div id="children-recommendations-list">
+                <!-- Children recommendations will be loaded here -->
+                <p class="empty-state">No children recommendations yet.</p>
+              </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analytics-tab" class="tab-content">
+              <h2>Analytics</h2>
+              <div class="card">
+                <h3>Usage Statistics</h3>
+                <div id="analytics-container">
+                  <!-- Analytics will be loaded here -->
+                  <p class="empty-state">No analytics data available yet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p>&copy; 2023 Balanced Diet Recommendation System</p>
+            <p>Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/language-toggle.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

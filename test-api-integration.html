@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Integration Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Integration Test</h1>
+    <p>This page tests the integration between the frontend and backend API for food data loading.</p>
+    
+    <div id="test-results"></div>
+    
+    <button onclick="runTests()">Run Tests</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <script src="js/api.js"></script>
+    <script>
+        let testResults = [];
+        
+        function addResult(type, message, details = null) {
+            const result = { type, message, details, timestamp: new Date().toISOString() };
+            testResults.push(result);
+            displayResults();
+        }
+        
+        function displayResults() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = testResults.map(result => `
+                <div class="test-result ${result.type}">
+                    <strong>[${result.timestamp}] ${result.message}</strong>
+                    ${result.details ? `<pre>${JSON.stringify(result.details, null, 2)}</pre>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function clearResults() {
+            testResults = [];
+            displayResults();
+        }
+        
+        async function runTests() {
+            clearResults();
+            addResult('info', 'Starting API integration tests...');
+            
+            // Test 1: Check if API client is available
+            try {
+                if (window.apiClient) {
+                    addResult('success', 'API Client is available');
+                } else {
+                    addResult('error', 'API Client is not available');
+                    return;
+                }
+            } catch (error) {
+                addResult('error', 'Error checking API Client', error.message);
+                return;
+            }
+            
+            // Test 2: Check if food data manager is available
+            try {
+                if (window.foodDataManager) {
+                    addResult('success', 'Food Data Manager is available');
+                } else {
+                    addResult('error', 'Food Data Manager is not available');
+                    return;
+                }
+            } catch (error) {
+                addResult('error', 'Error checking Food Data Manager', error.message);
+                return;
+            }
+            
+            // Test 3: Test API health check
+            try {
+                const isHealthy = await window.apiClient.healthCheck();
+                if (isHealthy) {
+                    addResult('success', 'Backend API health check passed');
+                } else {
+                    addResult('error', 'Backend API health check failed');
+                }
+            } catch (error) {
+                addResult('error', 'Error during API health check', error.message);
+            }
+            
+            // Test 4: Test direct API call to foods endpoint
+            try {
+                const response = await window.apiClient.getFoods();
+                if (response.success && response.data) {
+                    addResult('success', `Direct API call successful - Found ${response.data.foods.length} foods and ${response.data.categories.length} categories`);
+                } else {
+                    addResult('error', 'Direct API call failed', response);
+                }
+            } catch (error) {
+                addResult('error', 'Error during direct API call', error.message);
+            }
+            
+            // Test 5: Test food data manager loading
+            try {
+                const foodData = await window.foodDataManager.getFoodData();
+                if (foodData && foodData.foods && foodData.categories) {
+                    addResult('success', `Food Data Manager loading successful - Found ${foodData.foods.length} foods and ${foodData.categories.length} categories`);
+                    
+                    // Show sample food data
+                    if (foodData.foods.length > 0) {
+                        const sampleFood = foodData.foods[0];
+                        addResult('info', 'Sample food data', {
+                            id: sampleFood.id,
+                            name: sampleFood.name,
+                            category: sampleFood.category,
+                            price: sampleFood.price
+                        });
+                    }
+                } else {
+                    addResult('error', 'Food Data Manager returned invalid data', foodData);
+                }
+            } catch (error) {
+                addResult('error', 'Error during Food Data Manager loading', error.message);
+            }
+            
+            // Test 6: Test global food data availability
+            try {
+                if (window.foodData && window.foodData.foods) {
+                    addResult('success', `Global food data is available - ${window.foodData.foods.length} foods loaded`);
+                } else {
+                    addResult('error', 'Global food data is not available');
+                }
+            } catch (error) {
+                addResult('error', 'Error checking global food data', error.message);
+            }
+            
+            addResult('info', 'All tests completed');
+        }
+        
+        // Auto-run tests when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(runTests, 1000); // Wait a bit for api.js to initialize
+        });
+    </script>
+</body>
+</html>

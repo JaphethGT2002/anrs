@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Children's Recommendations | Balanced Diet Recommendation System
+    </title>
+    <meta
+      name="description"
+      content="Age-based nutrition recommendations for Rwandan children"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+    <style>
+      /* Additional styles for children's recommendations page */
+      .age-input-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .age-input-container .form-group {
+        flex: 1;
+      }
+
+      .feeding-schedule {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .schedule-item {
+        display: flex;
+        background-color: var(--light-bg);
+        border-radius: 0.5rem;
+        overflow: hidden;
+      }
+
+      .schedule-time {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.5rem 1rem;
+        font-weight: bold;
+        min-width: 120px;
+        display: flex;
+        align-items: center;
+      }
+
+      .schedule-meal {
+        padding: 0.5rem 1rem;
+        flex: 1;
+      }
+
+      .age-stage-info {
+        background-color: var(--light-bg);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+        border-left: 4px solid var(--primary-color);
+      }
+
+      .recommendations-section {
+        margin-bottom: 1.5rem;
+      }
+
+      .recommended-foods li,
+      .foods-to-avoid li,
+      .important-tips li {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .recommended-foods i,
+      .important-tips i {
+        color: var(--success-color);
+        margin-right: 0.5rem;
+        margin-top: 0.25rem;
+      }
+
+      .foods-to-avoid i {
+        color: var(--error-color);
+        margin-right: 0.5rem;
+        margin-top: 0.25rem;
+      }
+
+      .nutritional-needs {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .nutrient-item {
+        background-color: var(--light-bg);
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+      }
+
+      .nutrient-name {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+
+      .nutrient-value {
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+      }
+
+      .nutrient-sources {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+      @media (min-width: 768px) {
+        .feeding-schedule {
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .nutritional-needs {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .age-info-cards {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      @media (min-width: 768px) {
+        .age-info-cards {
+          grid-template-columns: 1fr 1fr 1fr;
+        }
+      }
+
+      .age-info-card {
+        text-align: center;
+      }
+
+      .age-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
+      }
+
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .footer-section h4 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <h1 class="page-title">
+          <i class="fas fa-child"></i> Children's Nutrition Recommendations
+        </h1>
+        <p class="page-description">
+          Get age-appropriate nutrition recommendations for your child based on
+          weeks, months, or years of age. Our guidance is tailored to support
+          healthy growth and development using locally available Rwandan foods.
+        </p>
+
+        <div id="error-container"></div>
+
+        <div class="content-layout">
+          <div class="input-section">
+            <div class="card">
+              <h2>Enter Your Child's Age</h2>
+              <p>
+                We'll provide nutrition recommendations based on your child's
+                developmental stage.
+              </p>
+
+              <form id="age-form" class="age-form">
+                <div class="age-input-container">
+                  <div class="form-group">
+                    <label for="age-value">Age</label>
+                    <input
+                      type="number"
+                      id="age-value"
+                      min="1"
+                      step="1"
+                      placeholder="Enter value"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="age-type">Unit</label>
+                    <select id="age-type" required>
+                      <option value="weeks">Weeks</option>
+                      <option value="months" selected>Months</option>
+                      <option value="years">Years</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn">
+                  <i class="fas fa-search"></i> Get Recommendations
+                </button>
+              </form>
+            </div>
+
+            <div class="card info-card">
+              <h3>Why Age Matters</h3>
+              <p>
+                Children's nutritional needs change dramatically as they grow.
+                From exclusive breastfeeding in early infancy to a varied diet
+                for school-age children, each stage requires specific nutrients
+                in appropriate amounts.
+              </p>
+              <p>
+                Our recommendations follow World Health Organization (WHO)
+                guidelines adapted for locally available Rwandan foods.
+              </p>
+            </div>
+          </div>
+
+          <div class="results-section">
+            <div id="age-results">
+              <!-- Age-based recommendations will be displayed here -->
+              <div class="card intro-card">
+                <h3>Nutrition Through the Ages</h3>
+                <p>
+                  Enter your child's age to receive specific recommendations.
+                  Here's a brief overview of key developmental stages:
+                </p>
+
+                <div class="age-info-cards">
+                  <div class="age-info-card">
+                    <div class="age-icon">
+                      <i class="fas fa-baby"></i>
+                    </div>
+                    <h4>0-6 Months</h4>
+                    <p>
+                      Exclusive breastfeeding is recommended, providing all
+                      necessary nutrients for optimal growth.
+                    </p>
+                  </div>
+
+                  <div class="age-info-card">
+                    <div class="age-icon">
+                      <i class="fas fa-baby-carriage"></i>
+                    </div>
+                    <h4>6-12 Months</h4>
+                    <p>
+                      Introduction of complementary foods while continuing
+                      breastfeeding, focusing on iron-rich foods.
+                    </p>
+                  </div>
+
+                  <div class="age-info-card">
+                    <div class="age-icon">
+                      <i class="fas fa-child"></i>
+                    </div>
+                    <h4>1-5 Years</h4>
+                    <p>
+                      Transition to family foods with balanced nutrition to
+                      support rapid growth and development.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p>&copy; 2023 Balanced Diet Recommendation System</p>
+            <p>Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/language-toggle.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/children-recommendations.js"></script>
+  </body>
+</html>

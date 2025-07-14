@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Balanced Diet Recommendation System | Rwanda</title>
+    <meta
+      name="description"
+      content="A web-based balanced diet recommendation system for Rwandan parents"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      /* .footer-section h4 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      } */
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <section class="hero">
+          <div class="hero-content">
+            <h1 class="section-title" data-translate="hero.title">Balanced Diet for Rwandan Children</h1>
+            <p class="hero-text" data-translate="hero.subtitle">
+              Discover balanced meal options using the groceries you already
+              have at home. Get recommendations for affordable, nutritious meals
+              that support your children's growth.
+            </p>
+            <div class="hero-features">
+              <div class="feature">
+                <i class="fas fa-check-circle"></i>
+                <span>Analyze your groceries for balanced nutrition</span>
+              </div>
+              <div class="feature">
+                <i class="fas fa-money-bill-wave"></i>
+                <span
+                  >Get affordable meal recommendations within your budget</span
+                >
+              </div>
+              <div class="feature">
+                <i class="fas fa-mobile-alt"></i>
+                <span>Works offline on your device</span>
+              </div>
+              <div class="feature">
+                <i class="fas fa-utensils"></i>
+                <span>Tailored for Rwandan foods and local ingredients</span>
+              </div>
+            </div>
+
+            <div class="hero-cta">
+              <a href="index.html" class="btn btn-primary btn-large" data-translate="hero.cta.primary">
+                <i class="fas fa-chart-pie"></i> Start Analyzing Your Diet
+              </a>
+              <a href="budget.html" class="btn btn-secondary btn-large" data-translate="hero.cta.secondary">
+                <i class="fas fa-money-bill-wave"></i> Get Budget Recommendations
+              </a>
+            </div>
+
+            <div class="guest-access-note">
+              <p>
+                <i class="fas fa-info-circle"></i>
+                You can use the system as a guest or
+                <a href="login.html">login</a> /
+                <a href="signup.html">sign up</a>
+                to save your preferences.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="info-section">
+          <h2 class="section-title" data-translate="features.title">Why Balanced Diet Matters</h2>
+          <div class="info-cards">
+            <div class="card info-card">
+              <div class="card-icon">
+                <i class="fas fa-child"></i>
+              </div>
+              <h3>Growth & Development</h3>
+              <p>
+                A balanced diet provides essential nutrients that support your
+                child's physical and mental development.
+              </p>
+            </div>
+
+            <div class="card info-card">
+              <div class="card-icon">
+                <i class="fas fa-brain"></i>
+              </div>
+              <h3>Cognitive Function</h3>
+              <p>
+                Proper nutrition improves concentration, memory, and overall
+                brain function in children.
+              </p>
+            </div>
+
+            <div class="card info-card">
+              <div class="card-icon">
+                <i class="fas fa-shield-alt"></i>
+              </div>
+              <h3>Immune System</h3>
+              <p>
+                A balanced diet strengthens your child's immune system, helping
+                them fight off illnesses.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="categories-section">
+          <h2 class="section-title" data-translate="categories.title">Essential Food Categories</h2>
+          <div class="category-cards">
+            <div
+              class="card category-card"
+              style="border-top: 4px solid var(--carbs-color)"
+            >
+              <div class="category-icon" style="color: var(--carbs-color)">
+                <i class="fas fa-bread-slice"></i>
+              </div>
+              <h3 data-translate="category.carbs.title">Carbohydrates</h3>
+              <p data-translate="category.carbs.description">Energy-giving foods like Ubugari, Ibirayi, and Umuceri.</p>
+              <span class="category-badge category-carbohydrates" data-translate="category.carbs.badge"
+                >Ibitera imbaraga</span
+              >
+            </div>
+
+            <div
+              class="card category-card"
+              style="border-top: 4px solid var(--protein-color)"
+            >
+              <div class="category-icon" style="color: var(--protein-color)">
+                <i class="fas fa-drumstick-bite"></i>
+              </div>
+              <h3 data-translate="category.proteins.title">Proteins</h3>
+              <p data-translate="category.proteins.description">Body-building foods like Ibishyimbo, Inyama, and Amata.</p>
+              <span class="category-badge category-proteins" data-translate="category.proteins.badge"
+                >Ibyubaka umubiri</span
+              >
+            </div>
+
+            <div
+              class="card category-card"
+              style="border-top: 4px solid var(--vitamin-color)"
+            >
+              <div class="category-icon" style="color: var(--vitamin-color)">
+                <i class="fas fa-carrot"></i>
+              </div>
+              <h3 data-translate="category.vitamins.title">Vitamins & Minerals</h3>
+              <p data-translate="category.vitamins.description">Protective foods like Isombe, Imbwija, and Karoti.</p>
+              <span class="category-badge category-vitamins" data-translate="category.vitamins.badge"
+                >Vitamini n'imyunyu ngugu</span
+              >
+            </div>
+
+            <div
+              class="card category-card"
+              style="border-top: 4px solid var(--fat-color)"
+            >
+              <div class="category-icon" style="color: var(--fat-color)">
+                <i class="fas fa-oil-can"></i>
+              </div>
+              <h3 data-translate="category.fats.title">Fats & Oils</h3>
+              <p data-translate="category.fats.description">Energy-concentrated foods like Amavuta y'inka and Avoka.</p>
+              <span class="category-badge category-fats" data-translate="category.fats.badge">Amavuta</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p data-translate="footer.copyright">&copy; 2025 Balanced Diet Recommendation System</p>
+            <p data-translate="footer.subtitle">Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4 data-translate="footer.social.title">Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/home-language-toggle.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+  </body>
+</html>

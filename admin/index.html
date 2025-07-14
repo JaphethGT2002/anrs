@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ANRS Admin Login - Balanced Diet Recommendation System</title>
+    <link rel="stylesheet" href="css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="icon" type="image/x-icon" href="../assets/icons/favicon.ico" />
+  </head>
+  <body>
+    <div class="admin-login-container">
+      <div class="admin-login-card">
+        <div class="admin-login-logo">
+          <h1><i class="fas fa-shield-alt"></i> ANRS Admin</h1>
+          <p>Balanced Diet Recommendation System</p>
+          <p>Administrative Dashboard</p>
+        </div>
+
+        <form id="admin-login-form" class="admin-login-form">
+          <div id="admin-login-error" class="admin-error hidden"></div>
+          <div id="admin-login-success" class="admin-success hidden"></div>
+
+          <div class="admin-form-group">
+            <label for="admin-email" class="admin-form-label">
+              <i class="fas fa-envelope"></i> Email Address
+            </label>
+            <input
+              type="email"
+              id="admin-email"
+              name="email"
+              class="admin-form-input"
+              placeholder="Enter your admin email"
+              required
+              autocomplete="email"
+            />
+          </div>
+
+          <div class="admin-form-group">
+            <label for="admin-password" class="admin-form-label">
+              <i class="fas fa-lock"></i> Password
+            </label>
+            <input
+              type="password"
+              id="admin-password"
+              name="password"
+              class="admin-form-input"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div class="admin-form-group">
+            <button
+              type="submit"
+              class="admin-btn admin-btn-primary admin-btn-full"
+            >
+              <i class="fas fa-sign-in-alt"></i>
+              Sign In to Dashboard
+            </button>
+          </div>
+
+          <div
+            class="admin-form-group"
+            style="text-align: center; margin-top: 2rem"
+          >
+            <p style="color: var(--admin-gray-600); font-size: 0.9rem">
+              Don't have an admin account?
+              <a
+                href="pages/register.html"
+                style="
+                  color: var(--admin-primary);
+                  text-decoration: none;
+                  font-weight: 600;
+                "
+              >
+                Register here
+              </a>
+            </p>
+          </div>
+
+          <div
+            class="admin-form-group"
+            style="text-align: center; margin-top: 1rem"
+          >
+            <a
+              href="../index.html"
+              style="
+                color: var(--admin-gray-500);
+                text-decoration: none;
+                font-size: 0.9rem;
+              "
+            >
+              <i class="fas fa-arrow-left"></i> Back to Main Site
+            </a>
+          </div>
+
+          <!-- Demo Credentials -->
+          <div class="demo-info">
+            <p
+              style="
+                margin-top: 0.5rem;
+                font-size: 0.75rem;
+                color: var(--admin-gray-500);
+              "
+            >
+              <i class="fas fa-server"></i> Backend:
+              <span id="backend-status">Checking...</span>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-spinner">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Signing you in...</p>
+      </div>
+    </div>
+
+    <!-- Inline AdminAPI for guaranteed functionality -->
+    <script>
+      // Inline AdminAPI implementation
+      class InlineAdminAPI {
+        constructor() {
+          this.baseURL = "http://localhost:3002/api";
+          this.token = localStorage.getItem("adminToken");
+        }
+
+        setToken(token) {
+          this.token = token;
+          if (token) {
+            localStorage.setItem("adminToken", token);
+          } else {
+            localStorage.removeItem("adminToken");
+          }
+        }
+
+        getToken() {
+          return this.token || localStorage.getItem("adminToken");
+        }
+
+        async request(endpoint, options = {}) {
+          const url = `${this.baseURL}${endpoint}`;
+          const token = this.getToken();
+
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              ...options.headers,
+            },
+            ...options,
+          };
+
+          if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+          }
+
+          console.log(`🌐 API Base URL: ${this.baseURL}`);
+          console.log(`📡 Making API request to: ${url}`);
+
+          const response = await fetch(url, config);
+
+          if (!response.ok) {
+            let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+            try {
+              const errorData = await response.json();
+              errorMessage =
+                errorData.message || errorData.error || errorMessage;
+            } catch (parseError) {
+              console.warn(
+                "Could not parse error response as JSON:",
+                parseError
+              );
+            }
+            throw new Error(errorMessage);
+          }
+
+          const data = await response.json();
+          console.log(`API response from ${url}:`, data);
+          return data;
+        }
+
+        async login(email, password) {
+          const response = await this.request("/admin/auth/admin-login", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+          });
+
+          if (response.token) {
+            this.setToken(response.token);
+            // Store admin info
+            localStorage.setItem("adminInfo", JSON.stringify(response.admin));
+          }
+
+          return response;
+        }
+
+        async verifyAdminToken() {
+          try {
+            const response = await this.request("/admin/auth/verify-admin");
+            return response.valid === true;
+          } catch (error) {
+            console.log("Token verification failed:", error);
+            return false;
+          }
+        }
+      }
+
+      // Create AdminAPI instance (fallback if external script fails)
+      if (!window.AdminAPI) {
+        window.AdminAPI = new InlineAdminAPI();
+        console.log("✅ Using inline AdminAPI implementation");
+      }
+    </script>
+
+    <script src="js/admin-api.js"></script>
+    <script src="js/admin-auth.js"></script>
+    <script>
+      // Inline handleAdminLogin function as fallback
+      async function inlineHandleAdminLogin(e) {
+        e.preventDefault();
+
+        const emailInput = document.getElementById("admin-email");
+        const passwordInput = document.getElementById("admin-password");
+        const errorContainer = document.getElementById("admin-login-error");
+        const submitButton = document.querySelector(
+          "#admin-login-form button[type='submit']"
+        );
+        const loadingOverlay = document.getElementById("loading-overlay");
+
+        // Clear previous errors
+        if (errorContainer) {
+          errorContainer.style.display = "none";
+          errorContainer.textContent = "";
+        }
+
+        // Validate inputs
+        if (!emailInput || !passwordInput) {
+          console.error("Email or password input not found");
+          showError("Login form elements not found");
+          return;
+        }
+
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        if (!email || !password) {
+          showError("Please enter both email and password");
+          return;
+        }
+
+        // Show loading state
+        if (submitButton) {
+          submitButton.disabled = true;
+          submitButton.innerHTML =
+            '<i class="fas fa-spinner fa-spin"></i> Signing in...';
+        }
+
+        if (loadingOverlay) {
+          loadingOverlay.style.display = "flex";
+        }
+
+        try {
+          console.log("🔐 Attempting admin login for:", email);
+
+          // Attempt login
+          const response = await AdminAPI.login(email, password);
+
+          console.log("✅ Login successful:", response);
+
+          // Store admin info
+          if (response.admin) {
+            localStorage.setItem("adminInfo", JSON.stringify(response.admin));
+          }
+
+          // Redirect to dashboard
+          console.log("🚀 Redirecting to dashboard...");
+          window.location.href = "pages/dashboard.html";
+        } catch (error) {
+          console.error("❌ Login failed:", error);
+          showError(
+            error.message || "Login failed. Please check your credentials."
+          );
+        } finally {
+          // Reset button state
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.innerHTML =
+              '<i class="fas fa-sign-in-alt"></i> Sign In';
+          }
+
+          if (loadingOverlay) {
+            loadingOverlay.style.display = "none";
+          }
+        }
+
+        function showError(message) {
+          if (errorContainer) {
+            errorContainer.textContent = message;
+            errorContainer.style.display = "block";
+          }
+          console.error("Login error:", message);
+        }
+      }
+
+      // Initialize admin login
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("🚀 Admin login page initialized");
+        console.log("AdminAPI available:", !!window.AdminAPI);
+        console.log(
+          "Backend URL:",
+          window.AdminAPI?.baseURL || "Not available"
+        );
+
+        // Check if already logged in
+        const adminToken = localStorage.getItem("adminToken");
+        console.log("Existing admin token:", adminToken ? "Present" : "None");
+
+        if (adminToken) {
+          console.log("Verifying existing token...");
+          // Verify token and redirect if valid
+          if (
+            window.AdminAPI &&
+            typeof window.AdminAPI.verifyAdminToken === "function"
+          ) {
+            AdminAPI.verifyAdminToken()
+              .then((isValid) => {
+                console.log("Token verification result:", isValid);
+                if (isValid) {
+                  console.log("Token valid, redirecting to dashboard...");
+                  window.location.href = "pages/dashboard.html";
+                }
+              })
+              .catch((error) => {
+                console.log("Token verification failed:", error);
+                // Token invalid, remove it
+                localStorage.removeItem("adminToken");
+                localStorage.removeItem("adminInfo");
+              });
+          }
+        }
+
+        // Handle form submission
+        const loginForm = document.getElementById("admin-login-form");
+        if (loginForm) {
+          console.log("Login form found, adding event listener");
+
+          // Use external handleAdminLogin if available, otherwise use inline version
+          if (typeof handleAdminLogin === "function") {
+            console.log("✅ Using external handleAdminLogin function");
+            loginForm.addEventListener("submit", handleAdminLogin);
+          } else {
+            console.log("⚠️ Using inline handleAdminLogin function");
+            loginForm.addEventListener("submit", inlineHandleAdminLogin);
+          }
+        } else {
+          console.error("Login form not found!");
+        }
+
+        // Add enter key support
+        document.addEventListener("keypress", function (e) {
+          if (
+            e.key === "Enter" &&
+            document.activeElement.tagName !== "BUTTON"
+          ) {
+            e.preventDefault();
+            if (loginForm) {
+              loginForm.dispatchEvent(new Event("submit"));
+            }
+          }
+        });
+
+        // Test backend connectivity
+        console.log("Testing backend connectivity...");
+        const backendStatus = document.getElementById("backend-status");
+
+        fetch("http://localhost:3002/api/admin/auth/verify-admin")
+          .then((response) => {
+            console.log("Backend connectivity test - Status:", response.status);
+            if (response.status === 401) {
+              backendStatus.innerHTML =
+                '<span style="color: var(--admin-success);">✅ Online</span>';
+              backendStatus.title =
+                "Backend server is running and responding correctly";
+            } else {
+              backendStatus.innerHTML =
+                '<span style="color: var(--admin-warning);">⚠️ Unexpected Response</span>';
+              backendStatus.title = `Backend responded with status ${response.status}`;
+            }
+            return response.json();
+          })
+          .then((data) => {
+            console.log("Backend connectivity test - Response:", data);
+          })
+          .catch((error) => {
+            console.error("Backend connectivity test failed:", error);
+            console.error(
+              "Make sure the backend server is running on http://localhost:3002"
+            );
+            backendStatus.innerHTML =
+              '<span style="color: var(--admin-danger);">❌ Offline</span>';
+            backendStatus.title =
+              "Cannot connect to backend server. Make sure it's running on port 3002.";
+          });
+      });
+    </script>
+
+    <style>
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+      }
+
+      .loading-spinner {
+        background-color: var(--admin-white);
+        padding: var(--admin-spacing-xl);
+        border-radius: var(--admin-radius-lg);
+        text-align: center;
+        box-shadow: var(--admin-shadow-xl);
+      }
+
+      .loading-spinner i {
+        font-size: 2rem;
+        color: var(--admin-primary);
+        margin-bottom: var(--admin-spacing-md);
+      }
+
+      .loading-spinner p {
+        color: var(--admin-gray-700);
+        margin: 0;
+      }
+
+      /* Demo credentials info */
+      .demo-info {
+        margin-top: var(--admin-spacing-xl);
+        padding: var(--admin-spacing-md);
+        background-color: var(--admin-gray-100);
+        border-radius: var(--admin-radius-md);
+        font-size: 0.85rem;
+        color: var(--admin-gray-600);
+      }
+
+      .demo-info h4 {
+        color: var(--admin-primary);
+        margin-bottom: var(--admin-spacing-sm);
+      }
+
+      .demo-info code {
+        background-color: var(--admin-white);
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: "Courier New", monospace;
+      }
+    </style>
+  </body>
+</html>

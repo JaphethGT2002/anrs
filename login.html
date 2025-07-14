@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | Balanced Diet Recommendation System</title>
+    <meta
+      name="description"
+      content="Login to the Balanced Diet Recommendation System for Rwandan Parents"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      .auth-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-xl) 0;
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .auth-card {
+        background-color: white;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--shadow-md);
+        padding: var(--spacing-xl);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .auth-header h1 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .auth-header p {
+        color: #666;
+      }
+
+      .auth-form {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #eee;
+      }
+
+      .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .footer-section h4 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <section class="auth-page">
+          <div class="auth-container">
+            <div class="auth-card">
+              <div class="auth-header">
+                <h1>Login</h1>
+                <p>Welcome back! Please login to access your account.</p>
+              </div>
+
+              <div id="login-error" class="error-message hidden"></div>
+
+              <form id="login-form" class="auth-form">
+                <div class="form-group">
+                  <label for="login-email">Email</label>
+                  <input
+                    type="email"
+                    id="login-email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="login-password">Password</label>
+                  <input
+                    type="password"
+                    id="login-password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%">
+                  <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+              </form>
+
+              <div class="form-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up</a></p>
+                <p>Or <a href="index.html">continue as guest</a></p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p>&copy; 2025 Balanced Diet Recommendation System</p>
+            <p>Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/notifications.js"></script>
+    <script src="js/connectivity-utils.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/language-toggle.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+      // Initialize connectivity utils and API service
+      if (typeof ConnectivityUtils !== 'undefined') {
+        window.connectivityUtils = new ConnectivityUtils();
+      }
+      if (typeof APIService !== 'undefined') {
+        window.apiService = new APIService();
+      }
+
+      // Direct initialization of the login form
+      document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.getElementById("login-form");
+        if (loginForm) {
+          loginForm.addEventListener("submit", handleLogin);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - ANRS Admin</title>
+    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+</head>
+<body>
+    <div class="admin-dashboard">
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-sidebar-logo">ANRS Admin</div>
+            </div>
+            
+            <nav class="admin-sidebar-nav">
+                <div class="admin-nav-item">
+                    <a href="dashboard.html" class="admin-nav-link">
+                        <i class="fas fa-tachometer-alt admin-nav-icon"></i>
+                        <span class="admin-nav-text">Dashboard</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="users.html" class="admin-nav-link">
+                        <i class="fas fa-users admin-nav-icon"></i>
+                        <span class="admin-nav-text">Users</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="foods.html" class="admin-nav-link">
+                        <i class="fas fa-utensils admin-nav-icon"></i>
+                        <span class="admin-nav-text">Foods</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="meals.html" class="admin-nav-link">
+                        <i class="fas fa-plate-wheat admin-nav-icon"></i>
+                        <span class="admin-nav-text">Meals</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="analytics.html" class="admin-nav-link active">
+                        <i class="fas fa-chart-bar admin-nav-icon"></i>
+                        <span class="admin-nav-text">Analytics</span>
+                    </a>
+                </div>
+                <div class="admin-nav-item">
+                    <a href="profile.html" class="admin-nav-link">
+                        <i class="fas fa-user-circle admin-nav-icon"></i>
+                        <span class="admin-nav-text">Profile</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main-content" id="adminMainContent">
+            <!-- Header -->
+            <header class="admin-header">
+                <div class="admin-header-left">
+                    <button class="admin-sidebar-toggle" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="admin-page-title">Analytics & Reports</h1>
+                </div>
+                <div class="admin-header-right">
+                    <div class="admin-user-menu">
+                        <div class="admin-user-avatar" id="userAvatar" title="Admin Menu">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="admin-user-dropdown" id="userDropdown">
+                            <a href="#" class="admin-logout-btn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Analytics Content -->
+            <div class="admin-content">
+                <!-- Time Period Selector -->
+                <div class="admin-page-controls">
+                    <div class="admin-period-selector">
+                        <label for="timePeriod" class="admin-form-label">Time Period:</label>
+                        <select id="timePeriod" class="admin-form-input" style="width: auto;">
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d" selected>Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                            <option value="1y">Last Year</option>
+                        </select>
+                    </div>
+                    <div class="admin-page-actions">
+                        <button class="admin-btn admin-btn-secondary" onclick="exportAnalytics()">
+                            <i class="fas fa-download"></i> Export Report
+                        </button>
+                        <button class="admin-btn admin-btn-primary" onclick="refreshAnalytics()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="admin-stats-grid">
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="admin-stat-content">
+                            <div class="admin-stat-number" id="analyticsUsers">-</div>
+                            <div class="admin-stat-label">Total Users</div>
+                            <div class="admin-stat-change positive" id="analyticsUsersChange">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="admin-stat-content">
+                            <div class="admin-stat-number" id="analyticsMeals">-</div>
+                            <div class="admin-stat-label">Meals Created</div>
+                            <div class="admin-stat-change positive" id="analyticsMealsChange">+0%</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="admin-stat-content">
+                            <div class="admin-stat-number" id="analyticsEngagement">-</div>
+                            <div class="admin-stat-label">Avg. Sessions</div>
+                            <div class="admin-stat-change neutral" id="analyticsEngagementChange">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="admin-stat-card">
+                        <div class="admin-stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="admin-stat-content">
+                            <div class="admin-stat-number" id="analyticsAvgBudget">-</div>
+                            <div class="admin-stat-label">Avg. Budget</div>
+                            <div class="admin-stat-change positive" id="analyticsAvgBudgetChange">+0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Grid -->
+                <div class="admin-analytics-grid">
+                    <!-- User Growth Chart -->
+                    <div class="admin-chart-card">
+                        <div class="admin-chart-header">
+                            <h3 class="admin-chart-title">
+                                <i class="fas fa-user-plus"></i> User Growth
+                            </h3>
+                            <select class="admin-form-input" style="width: auto; font-size: 0.9rem;">
+                                <option>Daily</option>
+                                <option>Weekly</option>
+                                <option>Monthly</option>
+                            </select>
+                        </div>
+                        <div class="admin-chart-content">
+                            <div class="admin-chart-placeholder">
+                                <i class="fas fa-chart-line"></i>
+                                <p>User growth chart will be displayed here</p>
+                                <small>Chart integration pending</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Meal Categories Chart -->
+                    <div class="admin-chart-card">
+                        <div class="admin-chart-header">
+                            <h3 class="admin-chart-title">
+                                <i class="fas fa-chart-pie"></i> Popular Food Categories
+                            </h3>
+                        </div>
+                        <div class="admin-chart-content">
+                            <div class="admin-chart-placeholder">
+                                <i class="fas fa-chart-pie"></i>
+                                <p>Food category distribution chart</p>
+                                <small>Chart integration pending</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Heatmap -->
+                    <div class="admin-chart-card">
+                        <div class="admin-chart-header">
+                            <h3 class="admin-chart-title">
+                                <i class="fas fa-calendar-alt"></i> Activity Heatmap
+                            </h3>
+                        </div>
+                        <div class="admin-chart-content">
+                            <div class="admin-chart-placeholder">
+                                <i class="fas fa-calendar-alt"></i>
+                                <p>User activity heatmap</p>
+                                <small>Chart integration pending</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Budget Analysis -->
+                    <div class="admin-chart-card">
+                        <div class="admin-chart-header">
+                            <h3 class="admin-chart-title">
+                                <i class="fas fa-money-bill-wave"></i> Budget Analysis
+                            </h3>
+                        </div>
+                        <div class="admin-chart-content">
+                            <div class="admin-chart-placeholder">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <p>Budget distribution and trends</p>
+                                <small>Chart integration pending</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Tables -->
+                <div class="admin-dashboard-grid">
+                    <!-- Top Foods -->
+                    <div class="admin-dashboard-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-star"></i> Most Popular Foods</h3>
+                            <button class="admin-btn admin-btn-sm" onclick="exportTopFoods()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <div class="admin-card-content">
+                            <div id="topFoodsList" class="admin-top-items-list">
+                                <div class="admin-loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Engagement -->
+                    <div class="admin-dashboard-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-fire"></i> Most Active Users</h3>
+                            <button class="admin-btn admin-btn-sm" onclick="exportActiveUsers()">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <div class="admin-card-content">
+                            <div id="activeUsersList" class="admin-top-items-list">
+                                <div class="admin-loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Performance -->
+                    <div class="admin-dashboard-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-tachometer-alt"></i> System Performance</h3>
+                            <button class="admin-btn admin-btn-sm" onclick="refreshPerformance()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="admin-card-content">
+                            <div id="systemHealthStatus" class="admin-performance-list">
+                                <div class="admin-loading">
+                                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Options -->
+                    <div class="admin-dashboard-card">
+                        <div class="admin-card-header">
+                            <h3><i class="fas fa-download"></i> Data Export</h3>
+                        </div>
+                        <div class="admin-card-content">
+                            <div class="admin-export-options">
+                                <button class="admin-export-btn" onclick="exportUsers()">
+                                    <i class="fas fa-users"></i>
+                                    <span>Export Users</span>
+                                    <small>CSV format</small>
+                                </button>
+                                <button class="admin-export-btn" onclick="exportMeals()">
+                                    <i class="fas fa-utensils"></i>
+                                    <span>Export Meals</span>
+                                    <small>CSV format</small>
+                                </button>
+                                <button class="admin-export-btn" onclick="exportAnalytics()">
+                                    <i class="fas fa-chart-bar"></i>
+                                    <span>Export Analytics</span>
+                                    <small>PDF report</small>
+                                </button>
+                                <button class="admin-export-btn" onclick="exportAll()">
+                                    <i class="fas fa-database"></i>
+                                    <span>Full Export</span>
+                                    <small>ZIP archive</small>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/admin-api.js"></script>
+    <script src="../js/admin-auth.js"></script>
+    <script src="../js/admin-dashboard.js"></script>
+    <script>
+        // Global variables
+        let analyticsData = {
+            stats: {},
+            topFoods: [],
+            activeUsers: [],
+            systemHealth: {},
+            currentPeriod: '30d'
+        };
+
+        // Initialize analytics page
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing analytics page...");
+
+            // Check authentication first
+            if (!checkAdminAuth()) {
+                console.log("Authentication failed, redirecting...");
+                return; // Will redirect to login
+            }
+
+            console.log("Authentication passed, setting up analytics page...");
+
+            // Initialize page components
+            initBasicAnalyticsPage();
+
+            // Setup event listeners
+            setupAnalyticsEventListeners();
+        });
+
+        // Basic analytics page initialization
+        function initBasicAnalyticsPage() {
+            console.log("Initializing basic analytics page...");
+
+            // Set up sidebar toggle
+            const sidebarToggle = document.getElementById("sidebarToggle");
+            const sidebar = document.getElementById("adminSidebar");
+            const mainContent = document.getElementById("adminMainContent");
+
+            if (sidebarToggle && sidebar && mainContent) {
+                sidebarToggle.addEventListener("click", function () {
+                    sidebar.classList.toggle("collapsed");
+                    mainContent.classList.toggle("sidebar-collapsed");
+                });
+            }
+
+            // Set up user dropdown
+            const userAvatar = document.getElementById("userAvatar");
+            const userDropdown = document.getElementById("userDropdown");
+
+            if (userAvatar && userDropdown) {
+                userAvatar.addEventListener("click", function () {
+                    userDropdown.classList.toggle("show");
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener("click", function (e) {
+                    if (
+                        !userAvatar.contains(e.target) &&
+                        !userDropdown.contains(e.target)
+                    ) {
+                        userDropdown.classList.remove("show");
+                    }
+                });
+            }
+
+            // Load analytics data after a short delay to ensure AdminAPI is ready
+            setTimeout(() => {
+                console.log("Loading analytics data...");
+                loadAnalyticsData();
+            }, 100);
+        }
+
+        // Load all analytics data
+        async function loadAnalyticsData() {
+            try {
+                console.log("Loading analytics data...");
+
+                // Show loading states
+                showLoadingStates();
+
+                // Check if AdminAPI is available
+                if (!window.AdminAPI) {
+                    console.error("AdminAPI is not available on window object");
+                    throw new Error("AdminAPI is not initialized");
+                }
+
+                // Load data in parallel
+                const [statsData, usersData, mealsData, healthData] = await Promise.allSettled([
+                    window.AdminAPI.getDashboardStats(),
+                    window.AdminAPI.getUsers(1, 10), // Get top 10 users for activity analysis
+                    window.AdminAPI.getAllMeals(1, 20), // Get recent meals for analysis
+                    window.AdminAPI.getSystemHealth()
+                ]);
+
+                // Process stats data
+                if (statsData.status === 'fulfilled' && statsData.value.success) {
+                    analyticsData.stats = statsData.value.stats;
+                    updateStatsCards(statsData.value.stats);
+                    console.log("Stats loaded:", statsData.value.stats);
+                } else {
+                    console.error('Failed to load stats:', statsData.reason);
+                    updateStatsCards(getDefaultStats());
+                }
+
+                // Process users data
+                if (usersData.status === 'fulfilled' && usersData.value.success) {
+                    analyticsData.activeUsers = usersData.value.users || [];
+                    updateActiveUsersList(analyticsData.activeUsers);
+                    console.log("Users loaded:", analyticsData.activeUsers.length);
+                } else {
+                    console.error('Failed to load users:', usersData.reason);
+                    updateActiveUsersList([]);
+                }
+
+                // Process meals data for food analysis
+                if (mealsData.status === 'fulfilled' && mealsData.value.success) {
+                    const meals = mealsData.value.meals || [];
+                    analyticsData.topFoods = analyzeFoodPopularity(meals);
+                    updateTopFoodsList(analyticsData.topFoods);
+                    console.log("Meals analyzed for food popularity:", meals.length);
+                } else {
+                    console.error('Failed to load meals:', mealsData.reason);
+                    updateTopFoodsList([]);
+                }
+
+                // Process system health data
+                if (healthData.status === 'fulfilled') {
+                    analyticsData.systemHealth = healthData.value;
+                    updateSystemHealth(healthData.value);
+                    console.log("System health loaded:", healthData.value);
+                } else {
+                    console.error('Failed to load system health:', healthData.reason);
+                    updateSystemHealth(getDefaultHealth());
+                }
+
+            } catch (error) {
+                console.error('Error loading analytics data:', error);
+                showErrorState();
+            }
+        }
+
+        // Update stats cards with real data
+        function updateStatsCards(stats) {
+            // Update total users
+            const usersElement = document.getElementById('analyticsUsers');
+            const usersChangeElement = document.getElementById('analyticsUsersChange');
+            if (usersElement) {
+                usersElement.textContent = stats.totalUsers || 0;
+            }
+            if (usersChangeElement) {
+                const change = stats.usersChange || 0;
+                usersChangeElement.textContent = `${change >= 0 ? '+' : ''}${change}%`;
+                usersChangeElement.className = `admin-stat-change ${change >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            // Update total meals
+            const mealsElement = document.getElementById('analyticsMeals');
+            const mealsChangeElement = document.getElementById('analyticsMealsChange');
+            if (mealsElement) {
+                mealsElement.textContent = stats.totalMeals || 0;
+            }
+            if (mealsChangeElement) {
+                const change = stats.mealsChange || 0;
+                mealsChangeElement.textContent = `${change >= 0 ? '+' : ''}${change}%`;
+                mealsChangeElement.className = `admin-stat-change ${change >= 0 ? 'positive' : 'negative'}`;
+            }
+
+            // Update engagement (active users)
+            const engagementElement = document.getElementById('analyticsEngagement');
+            const engagementChangeElement = document.getElementById('analyticsEngagementChange');
+            if (engagementElement) {
+                engagementElement.textContent = stats.activeUsers || 0;
+            }
+            if (engagementChangeElement) {
+                const change = stats.activeUsersChange || 0;
+                engagementChangeElement.textContent = `${change >= 0 ? '+' : ''}${change}%`;
+                engagementChangeElement.className = `admin-stat-change ${change >= 0 ? 'positive' : 'neutral'}`;
+            }
+
+            // Update average budget (calculated from meals)
+            const budgetElement = document.getElementById('analyticsAvgBudget');
+            const budgetChangeElement = document.getElementById('analyticsAvgBudgetChange');
+            if (budgetElement) {
+                // This would need to be calculated from meal costs or budget history
+                budgetElement.textContent = '15,000 RWF'; // Placeholder
+            }
+            if (budgetChangeElement) {
+                budgetChangeElement.textContent = '+5%'; // Placeholder
+                budgetChangeElement.className = 'admin-stat-change positive';
+            }
+        }
+
+        // Analyze food popularity from meals data
+        function analyzeFoodPopularity(meals) {
+            const foodCounts = {};
+
+            meals.forEach(meal => {
+                try {
+                    let foods = [];
+                    if (typeof meal.foods_data === 'string') {
+                        foods = JSON.parse(meal.foods_data);
+                    } else if (Array.isArray(meal.foods_data)) {
+                        foods = meal.foods_data;
+                    }
+
+                    foods.forEach(food => {
+                        const foodName = food.name || 'Unknown Food';
+                        if (foodCounts[foodName]) {
+                            foodCounts[foodName].count++;
+                            foodCounts[foodName].totalCost += parseFloat(food.price || 0);
+                        } else {
+                            foodCounts[foodName] = {
+                                name: foodName,
+                                count: 1,
+                                totalCost: parseFloat(food.price || 0)
+                            };
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Failed to parse foods_data for meal:', meal.id);
+                }
+            });
+
+            // Convert to array and sort by popularity
+            return Object.values(foodCounts)
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 10); // Top 10 foods
+        }
+
+        // Update active users list
+        function updateActiveUsersList(users) {
+            const container = document.getElementById('activeUsersList');
+            if (!container) return;
+
+            if (users.length === 0) {
+                container.innerHTML = '<div class="admin-loading">No active users data available</div>';
+                return;
+            }
+
+            const html = users.slice(0, 5).map(user => `
+                <div class="admin-user-item">
+                    <div class="admin-user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="admin-user-info">
+                        <div class="admin-user-name">${escapeHtml(user.name)}</div>
+                        <div class="admin-user-email">${escapeHtml(user.email)}</div>
+                        <div class="admin-user-status ${user.is_active ? 'active' : 'inactive'}">
+                            ${user.is_active ? 'Active' : 'Inactive'}
+                        </div>
+                    </div>
+                    <div class="admin-user-date">
+                        ${formatDate(user.created_at)}
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Update top foods list
+        function updateTopFoodsList(foods) {
+            const container = document.getElementById('topFoodsList');
+            if (!container) return;
+
+            if (foods.length === 0) {
+                container.innerHTML = '<div class="admin-loading">No food popularity data available</div>';
+                return;
+            }
+
+            const html = foods.map((food, index) => `
+                <div class="admin-food-item">
+                    <div class="admin-food-rank">#${index + 1}</div>
+                    <div class="admin-food-info">
+                        <div class="admin-food-name">${escapeHtml(food.name)}</div>
+                        <div class="admin-food-stats">
+                            Used in ${food.count} meals • Avg cost: ${(food.totalCost / food.count).toFixed(2)} RWF
+                        </div>
+                    </div>
+                    <div class="admin-food-count">${food.count}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Update system health
+        function updateSystemHealth(health) {
+            const container = document.getElementById('systemHealthStatus');
+            if (!container) return;
+
+            const getStatusColor = (status) => {
+                switch (status) {
+                    case 'healthy': return 'success';
+                    case 'warning': return 'warning';
+                    case 'error': return 'danger';
+                    default: return 'secondary';
+                }
+            };
+
+            const html = `
+                <div class="admin-health-item">
+                    <span class="admin-health-label">Database:</span>
+                    <span class="admin-badge admin-badge-${getStatusColor(health.database)}">${health.database}</span>
+                </div>
+                <div class="admin-health-item">
+                    <span class="admin-health-label">API:</span>
+                    <span class="admin-badge admin-badge-${getStatusColor(health.api)}">${health.api}</span>
+                </div>
+                <div class="admin-health-item">
+                    <span class="admin-health-label">Memory:</span>
+                    <span class="admin-badge admin-badge-${getStatusColor(health.memory)}">${health.memory}</span>
+                </div>
+                <div class="admin-health-item">
+                    <span class="admin-health-label">Disk:</span>
+                    <span class="admin-badge admin-badge-${getStatusColor(health.disk)}">${health.disk}</span>
+                </div>
+                <div class="admin-health-timestamp">
+                    Last checked: ${formatDate(health.timestamp)}
+                </div>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Utility functions
+        function showLoadingStates() {
+            const loadingHTML = '<div class="admin-loading"><i class="fas fa-spinner fa-spin"></i> Loading...</div>';
+
+            const elements = [
+                'analyticsUsers', 'analyticsMeals', 'analyticsEngagement', 'analyticsAvgBudget',
+                'activeUsersList', 'topFoodsList', 'systemHealthStatus'
+            ];
+
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerHTML = loadingHTML;
+                }
+            });
+        }
+
+        function showErrorState() {
+            const errorHTML = '<div class="admin-loading" style="color: #dc3545;">Error loading data</div>';
+
+            const elements = [
+                'activeUsersList', 'topFoodsList', 'systemHealthStatus'
+            ];
+
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.innerHTML = errorHTML;
+                }
+            });
+        }
+
+        function getDefaultStats() {
+            return {
+                totalUsers: 0,
+                activeUsers: 0,
+                totalMeals: 0,
+                totalFoods: 0,
+                usersChange: 0,
+                mealsChange: 0,
+                activeUsersChange: 0
+            };
+        }
+
+        function getDefaultHealth() {
+            return {
+                database: 'unknown',
+                api: 'unknown',
+                memory: 'unknown',
+                disk: 'unknown',
+                timestamp: new Date().toISOString()
+            };
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement("div");
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Setup event listeners
+        function setupAnalyticsEventListeners() {
+            // Period selector
+            const timePeriod = document.getElementById('timePeriod');
+            if (timePeriod) {
+                timePeriod.addEventListener('change', (e) => {
+                    analyticsData.currentPeriod = e.target.value;
+                    loadAnalyticsData();
+                });
+            }
+        }
+
+        // Global functions for button clicks
+        function refreshAnalytics() {
+            console.log('Refreshing analytics data...');
+            loadAnalyticsData();
+        }
+
+        function exportAnalytics() {
+            exportAnalyticsData();
+        }
+
+        function exportTopFoods() {
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + "Rank,Food Name,Usage Count,Total Cost,Average Cost\n"
+                + analyticsData.topFoods.map((food, index) =>
+                    `${index + 1},"${food.name}",${food.count},${food.totalCost.toFixed(2)},${(food.totalCost / food.count).toFixed(2)}`
+                ).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `top_foods_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function exportActiveUsers() {
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + "Name,Email,Status,Created Date\n"
+                + analyticsData.activeUsers.map(user =>
+                    `"${user.name}","${user.email}","${user.is_active ? 'Active' : 'Inactive'}","${formatDate(user.created_at)}"`
+                ).join("\n");
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `active_users_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function refreshPerformance() {
+            // Reload system health data
+            window.AdminAPI.getSystemHealth().then(health => {
+                updateSystemHealth(health);
+            }).catch(error => {
+                console.error('Failed to refresh system health:', error);
+            });
+        }
+
+        function exportUsers() {
+            // This would export all users - placeholder for now
+            console.log('Export users functionality would be implemented here');
+        }
+
+        function exportMeals() {
+            // This would export all meals - placeholder for now
+            console.log('Export meals functionality would be implemented here');
+        }
+
+        function exportAll() {
+            // This would export all data - placeholder for now
+            console.log('Export all data functionality would be implemented here');
+        }
+
+        // Export analytics data
+        function exportAnalyticsData() {
+            const csvContent = "data:text/csv;charset=utf-8,"
+                + "Metric,Value,Change\n"
+                + `Total Users,${analyticsData.stats.totalUsers || 0},${analyticsData.stats.usersChange || 0}%\n`
+                + `Active Users,${analyticsData.stats.activeUsers || 0},${analyticsData.stats.activeUsersChange || 0}%\n`
+                + `Total Meals,${analyticsData.stats.totalMeals || 0},${analyticsData.stats.mealsChange || 0}%\n`
+                + `Total Foods,${analyticsData.stats.totalFoods || 0},0%\n`;
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `analytics_export_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            console.log('Analytics data exported successfully');
+        }
+    </script>
+</body>
+</html>

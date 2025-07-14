@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up | Balanced Diet Recommendation System</title>
+    <meta
+      name="description"
+      content="Sign up for the Balanced Diet Recommendation System for Rwandan Parents"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      .auth-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--spacing-xl) 0;
+      }
+
+      .auth-container {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .auth-card {
+        background-color: white;
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--shadow-md);
+        padding: var(--spacing-xl);
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .auth-header h1 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .auth-header p {
+        color: #666;
+      }
+
+      .auth-form {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .form-footer {
+        text-align: center;
+        margin-top: var(--spacing-lg);
+        padding-top: var(--spacing-md);
+        border-top: 1px solid #eee;
+      }
+
+      .error-message {
+        background-color: #ffebee;
+        color: #c62828;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .success-message {
+        background-color: #e8f5e8;
+        color: #2e7d32;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+        border: 1px solid #c8e6c9;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      /* Button loading state */
+      .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn:disabled:hover {
+        background-color: var(--primary-color);
+        transform: none;
+      }
+
+      /* Notification container spacing */
+      body {
+        padding-top: 0;
+      }
+
+      /* Success message styling */
+      .success-message {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+        border-left: 4px solid #4caf50;
+      }
+
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+      }
+
+      .footer-section {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      .footer-section h4 {
+        color: var(--primary-color);
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: var(--primary-color);
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <section class="auth-page">
+          <div class="auth-container">
+            <div class="auth-card">
+              <div class="auth-header">
+                <h1>Sign Up</h1>
+                <p>
+                  Create an account to save your preferences and meal history.
+                </p>
+              </div>
+
+              <div id="register-error" class="error-message hidden"></div>
+              <div id="register-success" class="success-message hidden"></div>
+
+              <form id="register-form" class="auth-form">
+                <div class="form-group">
+                  <label for="register-name">Name</label>
+                  <input
+                    type="text"
+                    id="register-name"
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="register-email">Email</label>
+                  <input
+                    type="email"
+                    id="register-email"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="register-password">Password</label>
+                  <input
+                    type="password"
+                    id="register-password"
+                    placeholder="Enter your password"
+                    required
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label for="register-confirm-password"
+                    >Confirm Password</label
+                  >
+                  <input
+                    type="password"
+                    id="register-confirm-password"
+                    placeholder="Confirm your password"
+                    required
+                  />
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%">
+                  <i class="fas fa-user-plus"></i> Sign Up
+                </button>
+              </form>
+
+              <div class="form-footer">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+                <p>Or <a href="index.html">continue as guest</a></p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p>&copy; 2023 Balanced Diet Recommendation System</p>
+            <p>Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section">
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/notifications.js"></script>
+    <script src="js/api-service.js"></script>
+    <script src="js/connectivity-utils.js"></script>
+    <script src="js/language-toggle.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+      // Enhanced initialization of the registration form
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("Signup page loaded");
+
+        // Check if all required scripts are loaded
+        const requiredObjects = {
+          'notifications': typeof notifications,
+          'apiService': typeof apiService,
+          'connectivityUtils': typeof connectivityUtils,
+          'handleRegister': typeof handleRegister
+        };
+
+        console.log("Required objects status:", requiredObjects);
+
+        // Initialize form
+        const registerForm = document.getElementById("register-form");
+        const errorContainer = document.getElementById("register-error");
+        const successContainer = document.getElementById("register-success");
+
+        if (registerForm) {
+          console.log("Registration form found, attaching event listener");
+
+          registerForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            console.log("Form submitted");
+
+            // Clear previous messages
+            if (errorContainer) {
+              errorContainer.classList.add("hidden");
+              errorContainer.textContent = "";
+            }
+            if (successContainer) {
+              successContainer.classList.add("hidden");
+              successContainer.textContent = "";
+            }
+
+            // Check if handleRegister function exists
+            if (typeof handleRegister === 'function') {
+              try {
+                await handleRegister(e);
+              } catch (error) {
+                console.error("Registration error:", error);
+                if (errorContainer) {
+                  errorContainer.textContent = "Registration failed: " + error.message;
+                  errorContainer.classList.remove("hidden");
+                }
+              }
+            } else {
+              console.error("handleRegister function not found");
+              if (errorContainer) {
+                errorContainer.textContent = "Registration system not properly loaded. Please refresh the page.";
+                errorContainer.classList.remove("hidden");
+              }
+            }
+          });
+        } else {
+          console.error("Registration form not found");
+        }
+
+        // Add form validation
+        const inputs = registerForm.querySelectorAll('input[required]');
+        inputs.forEach(input => {
+          input.addEventListener('blur', function() {
+            if (!this.value.trim()) {
+              this.style.borderColor = '#dc3545';
+            } else {
+              this.style.borderColor = '#28a745';
+            }
+          });
+        });
+
+        // Password confirmation validation
+        const passwordInput = document.getElementById("register-password");
+        const confirmPasswordInput = document.getElementById("register-confirm-password");
+
+        if (passwordInput && confirmPasswordInput) {
+          confirmPasswordInput.addEventListener('input', function() {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+              confirmPasswordInput.style.borderColor = '#dc3545';
+              confirmPasswordInput.title = 'Passwords do not match';
+            } else {
+              confirmPasswordInput.style.borderColor = '#28a745';
+              confirmPasswordInput.title = '';
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

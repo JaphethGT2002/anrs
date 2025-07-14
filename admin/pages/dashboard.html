@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard - ANRS (Working Version)</title>
+    <link rel="stylesheet" href="../css/admin.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="../../assets/icons/favicon.ico"
+    />
+  </head>
+  <body>
+    <div class="admin-dashboard">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <div class="admin-sidebar-header">
+          <div class="admin-sidebar-logo">ANRS Admin</div>
+        </div>
+
+        <nav class="admin-sidebar-nav">
+          <div class="admin-nav-item">
+            <a href="dashboard.html" class="admin-nav-link active">
+              <i class="fas fa-tachometer-alt admin-nav-icon"></i>
+              <span class="admin-nav-text">Dashboard</span>
+            </a>
+          </div>
+          <div class="admin-nav-item">
+            <a href="users.html" class="admin-nav-link">
+              <i class="fas fa-users admin-nav-icon"></i>
+              <span class="admin-nav-text">Users</span>
+            </a>
+          </div>
+          <div class="admin-nav-item">
+            <a href="foods.html" class="admin-nav-link">
+              <i class="fas fa-utensils admin-nav-icon"></i>
+              <span class="admin-nav-text">Foods</span>
+            </a>
+          </div>
+          <div class="admin-nav-item">
+            <a href="meals.html" class="admin-nav-link">
+              <i class="fas fa-plate-wheat admin-nav-icon"></i>
+              <span class="admin-nav-text">Meals</span>
+            </a>
+          </div>
+          <div class="admin-nav-item">
+            <a href="analytics.html" class="admin-nav-link">
+              <i class="fas fa-chart-bar admin-nav-icon"></i>
+              <span class="admin-nav-text">Analytics</span>
+            </a>
+          </div>
+          <div class="admin-nav-item">
+            <a href="profile.html" class="admin-nav-link">
+              <i class="fas fa-user-circle admin-nav-icon"></i>
+              <span class="admin-nav-text">Profile</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="admin-main-content" id="adminMainContent">
+        <!-- Header -->
+        <header class="admin-header">
+          <div class="admin-header-left">
+            <button class="admin-sidebar-toggle" id="sidebarToggle">
+              <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="admin-page-title">Dashboard Overview</h1>
+          </div>
+          <div class="admin-header-right">
+            <div class="admin-user-menu">
+              <div class="admin-user-avatar" id="userAvatar" title="Admin Menu">
+                <i class="fas fa-user"></i>
+              </div>
+              <div class="admin-user-dropdown" id="userDropdown">
+                <a href="../index.html" class="admin-logout-btn">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="admin-content">
+          <!-- Stats Cards -->
+          <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="admin-stat-content">
+                <div class="admin-stat-number" id="totalUsers">Loading...</div>
+                <div class="admin-stat-label">Total Users</div>
+                <div class="admin-stat-change positive" id="usersChange">
+                  +0%
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon">
+                <i class="fas fa-utensils"></i>
+              </div>
+              <div class="admin-stat-content">
+                <div class="admin-stat-number" id="totalMeals">Loading...</div>
+                <div class="admin-stat-label">Saved Meals</div>
+                <div class="admin-stat-change positive" id="mealsChange">
+                  +0%
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon">
+                <i class="fas fa-apple-alt"></i>
+              </div>
+              <div class="admin-stat-content">
+                <div class="admin-stat-number" id="totalFoods">Loading...</div>
+                <div class="admin-stat-label">Food Items</div>
+                <div class="admin-stat-change neutral" id="foodsChange">0%</div>
+              </div>
+            </div>
+
+            <div class="admin-stat-card">
+              <div class="admin-stat-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <div class="admin-stat-content">
+                <div class="admin-stat-number" id="activeUsers">Loading...</div>
+                <div class="admin-stat-label">Active Users</div>
+                <div class="admin-stat-change positive" id="activeUsersChange">
+                  +0%
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts and Recent Activity -->
+          <div class="admin-dashboard-grid">
+            <!-- Recent Users -->
+            <div class="admin-dashboard-card">
+              <div class="admin-card-header">
+                <h3><i class="fas fa-user-plus"></i> Recent Users</h3>
+                <a href="users.html" class="admin-btn admin-btn-sm">View All</a>
+              </div>
+              <div class="admin-card-content">
+                <div id="recentUsers" class="admin-recent-list">
+                  <div class="admin-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Meals -->
+            <!-- <div class="admin-dashboard-card">
+              <div class="admin-card-header">
+                <h3><i class="fas fa-utensils"></i> Recent Meals</h3>
+                <a href="meals.html" class="admin-btn admin-btn-sm">View All</a>
+              </div>
+              <div class="admin-card-content">
+                <div id="recentMeals" class="admin-recent-list">
+                  <div class="admin-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                  </div>
+                </div>
+              </div>
+            </div> -->
+
+            <!-- System Health -->
+            <div class="admin-dashboard-card">
+              <div class="admin-card-header">
+                <h3><i class="fas fa-heartbeat"></i> System Health</h3>
+                <button
+                  class="admin-btn admin-btn-sm"
+                  onclick="refreshSystemHealth()"
+                >
+                  <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+              </div>
+              <div class="admin-card-content">
+                <div id="systemHealth" class="admin-health-indicators">
+                  <div class="admin-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="admin-dashboard-card">
+              <div class="admin-card-header">
+                <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+              </div>
+              <div class="admin-card-content">
+                <div class="admin-quick-actions">
+                  <a href="foods.html" class="admin-quick-action">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Food Item</span>
+                  </a>
+                  <a href="users.html" class="admin-quick-action">
+                    <i class="fas fa-user-edit"></i>
+                    <span>Manage Users</span>
+                  </a>
+                  <a href="analytics.html" class="admin-quick-action">
+                    <i class="fas fa-download"></i>
+                    <span>Export Data</span>
+                  </a>
+                  <a href="profile.html" class="admin-quick-action">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Profile</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Inline AdminAPI for guaranteed functionality -->
+    <script>
+      // Inline AdminAPI implementation
+      class InlineAdminAPI {
+        constructor() {
+          this.baseURL = "http://localhost:3002/api";
+          // Get token from localStorage
+          this.token = localStorage.getItem("adminToken");
+        }
+
+        setToken(token) {
+          this.token = token;
+          if (token) {
+            localStorage.setItem("adminToken", token);
+          } else {
+            localStorage.removeItem("adminToken");
+          }
+        }
+
+        getToken() {
+          return this.token || localStorage.getItem("adminToken");
+        }
+
+        // Check if user is authenticated
+        isAuthenticated() {
+          return !!this.getToken();
+        }
+
+        // Handle authentication errors
+        handleAuthError() {
+          console.log("Authentication failed, clearing token and redirecting...");
+          this.setToken(null);
+          localStorage.removeItem("adminInfo");
+          window.location.href = "../index.html";
+        }
+
+        async request(endpoint, options = {}) {
+          const url = `${this.baseURL}${endpoint}`;
+          const token = this.getToken();
+
+          // Check if we have a token
+          if (!token) {
+            console.error("No authentication token available");
+            this.handleAuthError();
+            throw new Error("Authentication required");
+          }
+
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              ...options.headers,
+            },
+            mode: 'cors',
+            credentials: 'include',
+            ...options,
+          };
+
+          config.headers.Authorization = `Bearer ${token}`;
+
+          console.log(`🌐 API Base URL: ${this.baseURL}`);
+          console.log(`📡 Making API request to: ${url}`);
+
+          try {
+            const response = await fetch(url, config);
+
+            if (!response.ok) {
+              let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+
+              // Handle authentication errors
+              if (response.status === 401) {
+                console.error("Authentication failed - token may be expired");
+                this.handleAuthError();
+                throw new Error("Token expired");
+              }
+
+              try {
+                const errorData = await response.json();
+                errorMessage = errorData.message || errorData.error || errorMessage;
+              } catch (parseError) {
+                console.warn("Could not parse error response as JSON:", parseError);
+              }
+
+              throw new Error(errorMessage);
+            }
+
+            const data = await response.json();
+            console.log(`API response from ${url}:`, data);
+            return data;
+
+          } catch (error) {
+            // Handle network errors
+            if (error.name === "TypeError" && error.message.includes("fetch")) {
+              throw new Error("Network error: Unable to connect to server. Please check if the backend server is running.");
+            }
+
+            // Re-throw other errors
+            throw error;
+          }
+        }
+
+        async getDashboardStats() {
+          return await this.request("/admin/stats/dashboard");
+        }
+
+        async getSystemHealth() {
+          return await this.request("/admin/system/health");
+        }
+
+        async getUsers(page = 1, limit = 20, search = "") {
+          const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            search,
+          });
+          return await this.request(`/admin/users?${params}`);
+        }
+
+        async getAllMeals(page = 1, limit = 20, search = "") {
+          const params = new URLSearchParams({
+            page: page.toString(),
+            limit: limit.toString(),
+            search,
+          });
+          return await this.request(`/admin/meals?${params}`);
+        }
+      }
+
+      // Create AdminAPI instance
+      const AdminAPI = new InlineAdminAPI();
+
+      // Dashboard initialization
+      document.addEventListener("DOMContentLoaded", function () {
+        console.log("🚀 Dashboard page loaded");
+
+        // Check authentication first
+        if (!AdminAPI.isAuthenticated()) {
+          console.log("❌ Not authenticated, redirecting to login");
+          AdminAPI.handleAuthError();
+          return;
+        }
+
+        console.log("✅ Authentication check passed, loading dashboard");
+        loadDashboard();
+      });
+
+      // Load dashboard data
+      async function loadDashboard() {
+        try {
+          console.log("📊 Loading dashboard data...");
+
+          // Show loading state
+          updateStatsDisplay({
+            totalUsers: "...",
+            totalMeals: "...",
+            totalFoods: "...",
+            activeUsers: "...",
+          });
+
+          // Load all data in parallel
+          const [statsResult, usersResult, mealsResult, healthResult] =
+            await Promise.allSettled([
+              AdminAPI.getDashboardStats(),
+              AdminAPI.getUsers(1, 5),
+              AdminAPI.getAllMeals(1, 5),
+              AdminAPI.getSystemHealth(),
+            ]);
+
+          // Update stats
+          if (statsResult.status === "fulfilled") {
+            console.log("📈 Stats loaded:", statsResult.value);
+            updateStatsDisplay(statsResult.value);
+          } else {
+            console.error("❌ Failed to load stats:", statsResult.reason);
+            updateStatsDisplay({
+              totalUsers: "Error",
+              totalMeals: "Error",
+              totalFoods: "Error",
+              activeUsers: "Error",
+            });
+          }
+
+          // Update recent users
+          if (usersResult.status === "fulfilled") {
+            console.log("👥 Users loaded:", usersResult.value);
+            updateRecentUsers(usersResult.value.users || []);
+          } else {
+            console.error("❌ Failed to load users:", usersResult.reason);
+            updateRecentUsers([]);
+          }
+
+          // Update recent meals
+          if (mealsResult.status === "fulfilled") {
+            console.log("🍽️ Meals loaded:", mealsResult.value);
+            updateRecentMeals(mealsResult.value.meals || []);
+          } else {
+            console.error("❌ Failed to load meals:", mealsResult.reason);
+            updateRecentMeals([]);
+          }
+
+          // Update system health
+          if (healthResult.status === "fulfilled") {
+            console.log("💚 Health loaded:", healthResult.value);
+            updateSystemHealth(healthResult.value);
+          } else {
+            console.error("❌ Failed to load health:", healthResult.reason);
+            updateSystemHealth({
+              database: "error",
+              api: "error",
+              memory: "unknown",
+              disk: "unknown",
+            });
+          }
+        } catch (error) {
+          console.error("❌ Error loading dashboard:", error);
+        }
+      }
+
+      // Update stats display
+      function updateStatsDisplay(stats) {
+        const elements = {
+          totalUsers: document.getElementById("totalUsers"),
+          totalMeals: document.getElementById("totalMeals"),
+          totalFoods: document.getElementById("totalFoods"),
+          activeUsers: document.getElementById("activeUsers"),
+          usersChange: document.getElementById("usersChange"),
+          mealsChange: document.getElementById("mealsChange"),
+          foodsChange: document.getElementById("foodsChange"),
+          activeUsersChange: document.getElementById("activeUsersChange"),
+        };
+
+        // Update main numbers
+        Object.keys(elements).forEach((key) => {
+          if (
+            elements[key] &&
+            stats[key] !== undefined &&
+            !key.includes("Change")
+          ) {
+            elements[key].textContent =
+              typeof stats[key] === "number"
+                ? new Intl.NumberFormat().format(stats[key])
+                : stats[key];
+          }
+        });
+
+        // Update change indicators
+        if (elements.usersChange && stats.usersChange !== undefined) {
+          updateChangeIndicator(elements.usersChange, stats.usersChange);
+        }
+        if (elements.mealsChange && stats.mealsChange !== undefined) {
+          updateChangeIndicator(elements.mealsChange, stats.mealsChange);
+        }
+        if (elements.foodsChange && stats.foodsChange !== undefined) {
+          updateChangeIndicator(elements.foodsChange, stats.foodsChange);
+        }
+        if (
+          elements.activeUsersChange &&
+          stats.activeUsersChange !== undefined
+        ) {
+          updateChangeIndicator(
+            elements.activeUsersChange,
+            stats.activeUsersChange
+          );
+        }
+      }
+
+      // Update change indicator
+      function updateChangeIndicator(element, change) {
+        if (!element) return;
+
+        const isPositive = change > 0;
+        const isNegative = change < 0;
+
+        element.textContent = `${change > 0 ? "+" : ""}${change}%`;
+        element.className =
+          "admin-stat-change " +
+          (isPositive ? "positive" : isNegative ? "negative" : "neutral");
+      }
+
+      // Update recent users
+      function updateRecentUsers(users) {
+        const container = document.getElementById("recentUsers");
+        if (!container) return;
+
+        if (!users || users.length === 0) {
+          container.innerHTML =
+            '<div class="admin-loading">No recent users found</div>';
+          return;
+        }
+
+        const html = users
+          .map(
+            (user) => `
+          <div class="admin-recent-item">
+            <div class="admin-recent-avatar">
+              ${getInitials(user.name)}
+            </div>
+            <div class="admin-recent-content">
+              <div class="admin-recent-name">${escapeHtml(user.name)}</div>
+              <div class="admin-recent-meta">
+                ${escapeHtml(user.email)} • ${formatDate(user.created_at)}
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Update recent meals
+      function updateRecentMeals(meals) {
+        const container = document.getElementById("recentMeals");
+        if (!container) return;
+
+        if (!meals || meals.length === 0) {
+          container.innerHTML =
+            '<div class="admin-loading">No recent meals found</div>';
+          return;
+        }
+
+        const html = meals
+          .map(
+            (meal) => `
+          <div class="admin-recent-item">
+            <div class="admin-recent-avatar">
+              <i class="fas fa-utensils"></i>
+            </div>
+            <div class="admin-recent-content">
+              <div class="admin-recent-name">${escapeHtml(meal.name)}</div>
+              <div class="admin-recent-meta">
+                ${
+                  meal.total_cost ? `$${meal.total_cost.toFixed(2)}` : "No cost"
+                } • ${formatDate(meal.saved_at)}
+              </div>
+            </div>
+          </div>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Update system health
+      function updateSystemHealth(health) {
+        const container = document.getElementById("systemHealth");
+        if (!container) return;
+
+        const indicators = [
+          { label: "Database", status: health.database || "unknown" },
+          { label: "API Server", status: health.api || "unknown" },
+          { label: "Memory Usage", status: health.memory || "unknown" },
+          { label: "Disk Space", status: health.disk || "unknown" },
+        ];
+
+        const html = indicators
+          .map(
+            (indicator) => `
+          <div class="admin-health-item">
+            <span class="admin-health-label">${indicator.label}</span>
+            <span class="admin-health-status ${indicator.status}">
+              ${
+                indicator.status.charAt(0).toUpperCase() +
+                indicator.status.slice(1)
+              }
+            </span>
+          </div>
+        `
+          )
+          .join("");
+
+        container.innerHTML = html;
+      }
+
+      // Utility functions
+      function formatDate(dateString) {
+        if (!dateString) return "Unknown";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function getInitials(name) {
+        return name
+          ? name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()
+          : "?";
+      }
+
+      function escapeHtml(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      // Refresh system health function
+      async function refreshSystemHealth() {
+        try {
+          const healthContainer = document.getElementById("systemHealth");
+          if (healthContainer) {
+            healthContainer.innerHTML =
+              '<div class="admin-loading"><i class="fas fa-spinner fa-spin"></i> Checking...</div>';
+          }
+
+          const health = await AdminAPI.getSystemHealth();
+          updateSystemHealth(health);
+          console.log("✅ System health refreshed");
+        } catch (error) {
+          console.error("❌ Failed to refresh system health:", error);
+          updateSystemHealth({
+            database: "error",
+            api: "error",
+            memory: "unknown",
+            disk: "unknown",
+          });
+        }
+      }
+
+      // Sidebar toggle functionality
+      document
+        .getElementById("sidebarToggle")
+        ?.addEventListener("click", function () {
+          document
+            .querySelector(".admin-dashboard")
+            .classList.toggle("sidebar-collapsed");
+        });
+
+      // User menu toggle
+      document
+        .getElementById("userAvatar")
+        ?.addEventListener("click", function () {
+          document.getElementById("userDropdown").classList.toggle("show");
+        });
+
+      // Close dropdown when clicking outside
+      document.addEventListener("click", function (event) {
+        if (!event.target.closest(".admin-user-menu")) {
+          document.getElementById("userDropdown")?.classList.remove("show");
+        }
+      });
+    </script>
+  </body>
+</html>

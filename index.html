@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Balanced Diet Recommendation System</title>
+    <meta
+      name="description"
+      content="Analyze your groceries for a balanced diet"
+    />
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+      /* Additional styles specific to dashboard */
+      .dashboard-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+
+      @media (min-width: 768px) {
+        .dashboard-container {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .food-selection {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      /* Category sections removed - all foods displayed in a single list */
+
+      .food-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+        max-height: 500px;
+        overflow-y: auto;
+        padding: var(--spacing-sm);
+        background-color: #f9f9f9;
+        border-radius: var(--border-radius-md);
+      }
+
+      .food-item {
+        background-color: white;
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .food-checkbox {
+        display: flex;
+        align-items: center;
+      }
+
+      .food-checkbox input[type="checkbox"] {
+        width: auto;
+        margin-right: var(--spacing-sm);
+      }
+
+      .food-quantity {
+        margin-top: var(--spacing-sm);
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+      }
+
+      .food-quantity input {
+        width: 60px;
+      }
+
+      .food-quantity select {
+        width: 80px;
+      }
+
+      .selected-foods-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .selected-foods-table th,
+      .selected-foods-table td {
+        padding: var(--spacing-sm);
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .btn-remove {
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
+
+      .analysis-card {
+        margin-top: var(--spacing-lg);
+      }
+
+      .analysis-header {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-sm);
+        margin-bottom: var(--spacing-md);
+      }
+
+      .analysis-header.balanced {
+        color: #4caf50;
+      }
+
+      .analysis-header.unbalanced {
+        color: #f44336;
+      }
+
+      .analysis-header i {
+        font-size: 2rem;
+      }
+
+      .category-list {
+        margin-top: var(--spacing-sm);
+      }
+
+      .category-list li {
+        display: flex;
+        align-items: center;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .category-count {
+        margin-left: var(--spacing-sm);
+      }
+
+      .benefits-list {
+        margin-top: var(--spacing-sm);
+      }
+
+      .benefits-list li {
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .meal-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: var(--spacing-md);
+        margin-top: var(--spacing-md);
+      }
+
+      .meal-card {
+        background-color: #f9f9f9;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-sm);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .meal-card h5 {
+        margin-bottom: var(--spacing-sm);
+        color: var(--primary-color);
+      }
+
+      .food-suggestions {
+        margin-top: var(--spacing-xs);
+        margin-left: var(--spacing-md);
+      }
+
+      .user-welcome {
+        background-color: var(--light-color);
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-md);
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .user-welcome h2 {
+        margin-bottom: var(--spacing-sm);
+        color: var(--primary-color);
+        font-weight: bold;
+      }
+
+      .user-welcome p {
+        color: #666;
+        margin-bottom: 0;
+        line-height: 1.5;
+      }
+
+      .saved-groceries-card {
+        margin-bottom: var(--spacing-lg);
+      }
+
+      .saved-foods-list {
+        margin-top: var(--spacing-sm);
+      }
+
+      .saved-foods-list li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .saved-date {
+        color: #666;
+        font-style: italic;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      #error-container,
+      #success-container {
+        padding: var(--spacing-sm);
+        border-radius: var(--border-radius-sm);
+        margin-bottom: var(--spacing-md);
+      }
+
+      #error-container {
+        background-color: #ffebee;
+        color: #c62828;
+      }
+
+      #success-container {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+      }
+
+      /* Search Bar Styles */
+      .search-container {
+        margin-bottom: var(--spacing-md);
+        background-color: #f9f9f9;
+        padding: var(--spacing-md);
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--shadow-sm);
+      }
+
+      .search-input-group {
+        position: relative;
+        margin-bottom: var(--spacing-sm);
+      }
+
+      .search-icon {
+        position: absolute;
+        left: var(--spacing-sm);
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      .search-input {
+        width: 100%;
+        padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm)
+          calc(var(--spacing-sm) * 3);
+        border: 1px solid #ddd;
+        border-radius: var(--border-radius-sm);
+        font-size: var(--font-medium);
+      }
+
+      .search-input:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+      }
+
+      .clear-search-btn {
+        position: absolute;
+        right: var(--spacing-sm);
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        cursor: pointer;
+        padding: 0;
+        font-size: var(--font-medium);
+      }
+
+      .clear-search-btn:hover {
+        color: var(--primary-color);
+      }
+
+      .search-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-sm);
+      }
+
+      .search-filters label {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .search-filters label input[type="checkbox"] {
+        margin-right: var(--spacing-xs);
+        width: auto;
+      }
+
+      /* Highlight search results */
+      .food-item.search-match {
+        border: 2px solid var(--primary-color);
+        animation: pulse 1s;
+      }
+
+      .food-item.search-hidden {
+        display: none;
+      }
+
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(46, 125, 50, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(46, 125, 50, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(46, 125, 50, 0);
+        }
+      }
+
+      .no-results {
+        padding: var(--spacing-md);
+        background-color: #f5f5f5;
+        border-radius: var(--border-radius-sm);
+        text-align: center;
+        margin-top: var(--spacing-md);
+      }
+
+      /* Footer styling */
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+        margin-top: var(--spacing-lg);
+      }
+
+      .footer-section.healthcare-links {
+        flex: 1;
+        min-width: 200px;
+        margin-top: var(--spacing-md);
+      }
+
+      .footer-section.healthcare-links h4 {
+        color: white;
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      }
+
+      .footer-section.healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .footer-section.healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      /* .footer-section.healthcare-links a {
+        color: #666;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      } */
+
+      /* .healthcare-link:hover {
+        color: var(--primary-color);
+      } */
+
+      /* .footer-section.footer-links {
+        flex: 1;
+        min-width: 200px;
+        margin-top: var(--spacing-md);
+      }
+
+      .footer-section.footer-links h4 {
+        color: white;
+        margin-bottom: var(--spacing-sm);
+        font-size: 1.1rem;
+      } */
+
+      .healthcare-links ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .healthcare-links li {
+        margin-bottom: var(--spacing-xs);
+      }
+
+      .healthcare-links a {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+
+      .healthcare-links a:hover {
+        color: white;
+      }
+
+      .healthcare-links i {
+        width: 16px;
+        text-align: center;
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          flex-direction: column;
+          text-align: center;
+        }
+
+        .footer-section {
+          width: 100%;
+        }
+      }
+
+      .healthcare-links ul li .healthcare-link {
+        color: #fff;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        transition: color 0.3s ease;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="container header-container">
+        <div class="logo">
+          <i class="fas fa-utensils"></i> <span class="logo-text" data-translate="logo.balanced">Balanced</span><span data-translate="logo.diet">Diet</span>
+        </div>
+        <nav>
+          <ul>
+            <li>
+              <a href="home.html"
+                ><i class="fas fa-home"></i> <span data-translate="nav.home">Home</span></a
+              >
+            </li>
+            <li>
+              <a href="index.html" class="active"
+                ><i class="fas fa-tachometer-alt"></i> <span data-translate="nav.grocery">Grocery</span></a
+              >
+            </li>
+            <li>
+              <a href="budget.html"
+                ><i class="fas fa-money-bill-wave"></i> <span data-translate="nav.budget">Budget</span></a
+              >
+            </li>
+            <li>
+              <a href="children.html"
+                ><i class="fas fa-child"></i> <span data-translate="nav.children">Children</span></a
+              >
+            </li>
+            <li class="auth-link guest-only">
+              <a href="login.html"
+                ><i class="fas fa-sign-in-alt"></i> <span data-translate="nav.login">Login</span></a
+              >
+            </li>
+            <li class="auth-link auth-dependent hidden">
+              <a href="dashboard.html"
+                ><i class="fas fa-user-circle"></i> <span data-translate="nav.dashboard">Dashboard</span></a
+              >
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Language Toggle -->
+        <div class="language-toggle">
+          <button id="language-btn" class="language-btn" data-translate-title="ui.switch.language" title="Switch Language">
+            <i class="fas fa-globe"></i>
+            <span id="current-language">EN</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          <div id="language-dropdown" class="language-dropdown hidden">
+            <button class="language-option" data-lang="en">
+              <span class="flag-icon">🇺🇸</span>
+              <span data-translate="language.english">English</span>
+            </button>
+            <button class="language-option" data-lang="rw">
+              <span class="flag-icon">🇷🇼</span>
+              <span data-translate="language.kinyarwanda">Kinyarwanda</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <div class="container">
+        <h1 class="section-title" data-translate="page.title">Grocery Analysis</h1>
+
+        <!-- User Welcome Section (Only visible when logged in) -->
+        <div class="user-welcome auth-dependent hidden">
+          <h2><span data-translate="welcome.user">Welcome</span>, <span class="user-name">User</span>!</h2>
+          <p data-translate="welcome.user.description">Select your groceries below to analyze your diet.</p>
+        </div>
+
+        <!-- Guest Welcome (Only visible for guests) -->
+        <div class="user-welcome guest-only">
+          <h2 data-translate="welcome.guest">Welcome, Guest!</h2>
+          <p>
+            <span data-translate="welcome.guest.description">Select your groceries below to analyze your diet.</span>
+            <a href="login.html" data-translate="welcome.guest.login">Login or register</a> <span data-translate="welcome.guest.save">to save your results.</span>
+          </p>
+        </div>
+
+        <!-- Error and Success Messages -->
+        <div id="error-container" class="hidden"></div>
+        <div id="success-container" class="hidden"></div>
+
+        <!-- Saved Groceries (Only visible when logged in) -->
+        <div id="saved-groceries" class="auth-dependent hidden"></div>
+
+        <div class="dashboard-container">
+          <div class="grocery-selection-container">
+            <div class="card">
+              <h2 data-translate="grocery.title">Select Your Groceries</h2>
+              <p data-translate="grocery.description">Check the items you currently have at home:</p>
+
+              <!-- Search Bar -->
+              <div class="search-container">
+                <div class="search-input-group">
+                  <i class="fas fa-search search-icon"></i>
+                  <input
+                    type="text"
+                    id="food-search"
+                    data-translate-placeholder="search.placeholder"
+                    placeholder="Search for foods (e.g., Beans, Rice, Milk)..."
+                    class="search-input"
+                  />
+                  <button
+                    type="button"
+                    id="clear-search"
+                    class="clear-search-btn hidden"
+                  >
+                    <i class="fas fa-times"></i>
+                  </button>
+                </div>
+                <div class="search-filters">
+                  <label>
+                    <input type="checkbox" id="filter-carbohydrates" />
+                    <span class="category-badge category-carbohydrates" data-translate="categories.carbohydrates"
+                      >Carbohydrates</span
+                    >
+                  </label>
+                  <label>
+                    <input type="checkbox" id="filter-proteins" />
+                    <span class="category-badge category-proteins" data-translate="categories.proteins"
+                      >Proteins</span
+                    >
+                  </label>
+                  <label>
+                    <input type="checkbox" id="filter-vitamins" />
+                    <span class="category-badge category-vitamins" data-translate="categories.vitamins"
+                      >Vitamins</span
+                    >
+                  </label>
+                  <label>
+                    <input type="checkbox" id="filter-fats" />
+                    <span class="category-badge category-fats" data-translate="categories.fats">Fats</span>
+                  </label>
+                </div>
+              </div>
+
+              <form id="grocery-form">
+                <div id="food-selection" class="food-selection">
+                  <!-- Food items will be populated by JavaScript -->
+                  <div class="loading hidden" id="food-loading">
+                    <i class="fas fa-spinner fa-spin"></i> <span data-translate="ui.loading.foods">Loading food items...</span>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn" id="analyze-diet">
+                  <i class="fas fa-chart-pie"></i> <span data-translate="buttons.analyze">Analyze Diet</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="results-container">
+            <div class="card">
+              <h2 data-translate="results.selected.title">Selected Foods</h2>
+              <div id="selected-foods">
+                <p data-translate="results.selected.empty">No foods selected yet.</p>
+              </div>
+            </div>
+
+            <div id="analysis-results">
+              <!-- Analysis results will be displayed here -->
+              <div class="analysis-placeholder hidden" id="analysis-placeholder">
+                <p data-translate="analysis.placeholder">Select foods and click "Analyze Diet" to see your nutrition analysis.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <p data-translate="footer.copyright">&copy; 2023 Balanced Diet Recommendation System</p>
+            <p data-translate="footer.subtitle">Designed for Rwandan Parents</p>
+          </div>
+
+          <div class="footer-section healthcare-links">
+            <h4 style="color: fff;">Healthcare Partners</h4>
+            <ul>
+              <li><a href="https://www.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-hospital"></i> Ministry of Health Rwanda
+              </a></li>
+              <li><a href="https://rbc.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-microscope"></i> Rwanda Biomedical Centre
+              </a></li>
+              <li><a href="https://kfh.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-user-md"></i> King Faisal Hospital Rwanda
+              </a></li>
+              <li><a href="https://hmis.moh.gov.rw/" target="_blank" rel="noopener noreferrer" style="color: fff;">
+                <i class="fas fa-chart-line"></i> Health Information System
+              </a></li>
+            </ul>
+          </div>
+
+          <div class="footer-section footer-links">
+            <h4>Follow Us</h4>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/api.js"></script>
+    <script src="js/groceries-language-toggle.js"></script>
+    <script src="js/diet-analysis.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+  </body>
+</html>

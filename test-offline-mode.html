@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Mode Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .danger {
+            background-color: #dc3545;
+        }
+        .danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <h1>Offline Mode Test</h1>
+    <p>This page tests how the application handles offline scenarios and cached data.</p>
+    
+    <div class="test-result warning">
+        <strong>Instructions:</strong>
+        <ol>
+            <li>First, run the test with server online to cache data</li>
+            <li>Then simulate offline mode by changing the API base URL</li>
+            <li>Test if cached data is used properly</li>
+        </ol>
+    </div>
+    
+    <div id="test-results"></div>
+    
+    <button onclick="testOnlineMode()">Test Online Mode</button>
+    <button onclick="simulateOfflineMode()">Simulate Offline Mode</button>
+    <button onclick="clearCache()">Clear Cache</button>
+    <button onclick="clearResults()">Clear Results</button>
+    
+    <script src="js/api.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        let testResults = [];
+        
+        function addResult(type, message) {
+            const result = { type, message, timestamp: new Date().toISOString() };
+            testResults.push(result);
+            displayResults();
+        }
+        
+        function displayResults() {
+            const container = document.getElementById('test-results');
+            container.innerHTML = testResults.map(result => `
+                <div class="test-result ${result.type}">
+                    <strong>[${result.timestamp}] ${result.message}</strong>
+                </div>
+            `).join('');
+        }
+        
+        function clearResults() {
+            testResults = [];
+            displayResults();
+        }
+        
+        function clearCache() {
+            localStorage.removeItem('foodData');
+            addResult('info', 'Cache cleared');
+        }
+        
+        async function testOnlineMode() {
+            addResult('info', 'Testing online mode...');
+            
+            // Reset API to normal URL
+            if (window.apiClient) {
+                window.apiClient.baseURL = 'http://localhost:3002/api';
+                addResult('info', 'API base URL set to: http://localhost:3002/api');
+            }
+            
+            try {
+                // Test loading food data
+                await loadFoodData();
+                
+                // Check if data was loaded
+                if (window.foodData && window.foodData.foods) {
+                    addResult('success', `Online mode successful - ${window.foodData.foods.length} foods loaded`);
+                    
+                    // Check if data was cached
+                    const cachedData = localStorage.getItem('foodData');
+                    if (cachedData) {
+                        addResult('success', 'Data successfully cached in localStorage');
+                    } else {
+                        addResult('warning', 'Data was not cached in localStorage');
+                    }
+                } else {
+                    addResult('error', 'Online mode failed - no food data available');
+                }
+            } catch (error) {
+                addResult('error', `Online mode failed: ${error.message}`);
+            }
+        }
+        
+        async function simulateOfflineMode() {
+            addResult('info', 'Simulating offline mode...');
+            
+            // Change API URL to simulate offline
+            if (window.apiClient) {
+                window.apiClient.baseURL = 'http://nonexistent-server:9999/api';
+                addResult('info', 'API base URL changed to simulate offline mode');
+            }
+            
+            // Clear current food data to force reload
+            window.foodData = null;
+            if (window.foodDataManager) {
+                window.foodDataManager.isLoaded = false;
+                window.foodDataManager.foodData = null;
+                window.foodDataManager.loadingPromise = null;
+            }
+            
+            try {
+                // Test loading food data in offline mode
+                await loadFoodData();
+                
+                // Check if cached data was used
+                if (window.foodData && window.foodData.foods) {
+                    addResult('success', `Offline mode successful - ${window.foodData.foods.length} foods loaded from cache`);
+                } else {
+                    addResult('error', 'Offline mode failed - no cached data available');
+                }
+            } catch (error) {
+                addResult('error', `Offline mode failed: ${error.message}`);
+            }
+        }
+        
+        // Listen for custom events
+        document.addEventListener('foodDataLoaded', (event) => {
+            if (event.detail.fromCache) {
+                addResult('info', 'Food data loaded from cache (offline mode detected)');
+            } else {
+                addResult('info', 'Food data loaded from API (online mode)');
+            }
+        });
+        
+        document.addEventListener('foodDataLoadError', (event) => {
+            addResult('error', `Food data load error: ${event.detail.error}`);
+        });
+    </script>
+</body>
+</html>

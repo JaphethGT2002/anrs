@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Recommendations Test - Vitamins & Minerals + Fats & Oils</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left-color: #28a745;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left-color: #dc3545;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border-left-color: #17a2b8;
+        }
+        .warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left-color: #ffc107;
+        }
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 12px;
+            margin: 2px;
+        }
+        .meal-option {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        h1 {
+            color: #2e7d32;
+            text-align: center;
+        }
+        h2 {
+            color: #1976d2;
+            border-bottom: 2px solid #1976d2;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🥗 Budget Recommendations Test</h1>
+    <h2>Testing Vitamins & Minerals + Fats & Oils Inclusion</h2>
+    
+    <div class="test-container">
+        <h3>Test Configuration</h3>
+        <div class="info test-result">
+            <strong>Objective:</strong> Verify that meal recommendations now properly include:
+            <ul>
+                <li>✅ Vitamins & Minerals (vegetables, fruits)</li>
+                <li>✅ Fats & Oils (healthy fats)</li>
+                <li>✅ Carbohydrates (energy foods)</li>
+                <li>✅ Proteins (body-building foods)</li>
+            </ul>
+        </div>
+        
+        <label for="budget-input">Test Budget (RWF):</label>
+        <input type="number" id="budget-input" value="2000" min="200" max="10000" style="padding: 8px; margin: 10px; border: 1px solid #ddd; border-radius: 4px;">
+        
+        <button onclick="runBudgetTest()">🧪 Run Budget Test</button>
+        <button onclick="runMultipleBudgetTests()">🔄 Test Multiple Budgets</button>
+        <button onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+
+    <div id="test-results"></div>
+
+    <!-- Include the food data and budget recommendations -->
+    <script src="data/rwanda-foods.json" type="application/json"></script>
+    <script>
+        // Load food data
+        let foodData = null;
+        
+        // Fetch food data
+        fetch('data/rwanda-foods.json')
+            .then(response => response.json())
+            .then(data => {
+                foodData = data;
+                window.foodData = data;
+                console.log('Food data loaded:', data);
+                displayFoodDataSummary();
+            })
+            .catch(error => {
+                console.error('Error loading food data:', error);
+                showResult('Error loading food data: ' + error.message, 'error');
+            });
+
+        function displayFoodDataSummary() {
+            const resultsDiv = document.getElementById('test-results');
+            
+            if (!foodData) {
+                showResult('Food data not loaded yet', 'warning');
+                return;
+            }
+
+            const categories = foodData.categories || [];
+            const foods = foodData.foods || [];
+            
+            // Count foods by category
+            const categoryCount = {};
+            foods.forEach(food => {
+                categoryCount[food.category] = (categoryCount[food.category] || 0) + 1;
+            });
+
+            let summary = `
+                <div class="test-container">
+                    <h3>📊 Food Data Summary</h3>
+                    <div class="info test-result">
+                        <strong>Total Categories:</strong> ${categories.length}<br>
+                        <strong>Total Foods:</strong> ${foods.length}
+                    </div>
+                    <h4>Categories & Food Count:</h4>
+            `;
+
+            categories.forEach(category => {
+                const count = categoryCount[category.id] || 0;
+                summary += `
+                    <div style="margin: 5px 0;">
+                        <span class="category-badge" style="background-color: ${category.color};">
+                            <i class="fas fa-${category.icon}"></i> ${category.name.en}
+                        </span>
+                        <strong>${count} foods</strong>
+                    </div>
+                `;
+            });
+
+            summary += '</div>';
+            resultsDiv.innerHTML = summary;
+        }
+
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = message;
+            resultsDiv.appendChild(resultDiv);
+        }
+
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = '';
+            displayFoodDataSummary();
+        }
+    </script>
+
+    <!-- Include budget recommendations script -->
+    <script src="js/budget-recommendations.js"></script>
+    
+    <script>
+        function runBudgetTest() {
+            const budget = parseInt(document.getElementById('budget-input').value);
+            
+            if (!budget || budget < 200) {
+                showResult('Please enter a valid budget (minimum 200 RWF)', 'error');
+                return;
+            }
+
+            if (!window.foodData) {
+                showResult('Food data not loaded. Please wait and try again.', 'warning');
+                return;
+            }
+
+            showResult(`🧪 Testing budget recommendations for ${budget} RWF...`, 'info');
+
+            try {
+                const recommendations = generateMealRecommendationsForBudget(budget);
+                displayTestResults(budget, recommendations);
+            } catch (error) {
+                showResult(`Error generating recommendations: ${error.message}`, 'error');
+                console.error('Test error:', error);
+            }
+        }
+
+        function displayTestResults(budget, recommendations) {
+            if (!recommendations || recommendations.length === 0) {
+                showResult(`❌ No recommendations generated for ${budget} RWF`, 'error');
+                return;
+            }
+
+            showResult(`✅ Generated ${recommendations.length} meal recommendation(s) for ${budget} RWF`, 'success');
+
+            recommendations.forEach((meal, index) => {
+                const categoriesIncluded = [...new Set(meal.foods.map(food => food.category))];
+                const hasVitamins = categoriesIncluded.includes('vitamins');
+                const hasFats = categoriesIncluded.includes('fats');
+                const hasCarbs = categoriesIncluded.includes('carbohydrates');
+                const hasProteins = categoriesIncluded.includes('proteins');
+
+                let categoryStatus = '';
+                if (hasCarbs && hasProteins && hasVitamins && hasFats) {
+                    categoryStatus = '🌟 FULLY BALANCED (All 4 categories)';
+                } else if (hasCarbs && hasProteins && hasVitamins) {
+                    categoryStatus = '✅ BALANCED (Missing Fats & Oils)';
+                } else if (hasCarbs && hasProteins) {
+                    categoryStatus = '⚠️ BASIC (Missing Vitamins & Fats)';
+                } else {
+                    categoryStatus = '❌ INCOMPLETE';
+                }
+
+                const mealHtml = `
+                    <div class="meal-option">
+                        <h4>Option ${index + 1}: ${meal.name}</h4>
+                        <div><strong>Status:</strong> ${categoryStatus}</div>
+                        <div><strong>Total Cost:</strong> ${meal.totalCost} RWF (${budget - meal.totalCost} RWF savings)</div>
+                        <div><strong>Quality Score:</strong> ${meal.qualityScore}/100</div>
+                        
+                        <h5>Categories Included:</h5>
+                        ${categoriesIncluded.map(categoryId => {
+                            const category = foodData.categories.find(c => c.id === categoryId);
+                            return category ? `<span class="category-badge" style="background-color: ${category.color};">${category.name.en}</span>` : '';
+                        }).join('')}
+                        
+                        <h5>Foods:</h5>
+                        <ul>
+                            ${meal.foods.map(food => `
+                                <li>${food.name.en} (${food.name.rw}) - ${food.quantity} ${food.unit} - ${food.price * food.quantity} RWF</li>
+                            `).join('')}
+                        </ul>
+                        
+                        <div><strong>Preparation Tip:</strong> ${meal.preparationTip}</div>
+                    </div>
+                `;
+
+                showResult(mealHtml, hasVitamins && hasFats ? 'success' : 'warning');
+            });
+        }
+
+        function runMultipleBudgetTests() {
+            const budgets = [500, 1000, 1500, 2000, 3000, 5000];
+            
+            showResult('🔄 Running tests for multiple budget levels...', 'info');
+            
+            budgets.forEach(budget => {
+                setTimeout(() => {
+                    document.getElementById('budget-input').value = budget;
+                    runBudgetTest();
+                }, 100);
+            });
+        }
+    </script>
+</body>
+</html>
